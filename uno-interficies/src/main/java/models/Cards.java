@@ -1,8 +1,8 @@
 package models;
 
-public class UnoCards {
+public class Cards {
 
-    public enum COLORS {
+    public enum COLOR {
         BLUE,
         GREEN,
         YELLOW,
@@ -10,11 +10,13 @@ public class UnoCards {
         BLACK
     }
 
-    public enum POWERS {
+    public enum TYPE {
         BLOCK,
         SWAP,
         DRAW2,
         CHANGE_COLOR,
-        DRAW4
+        DRAW4,
+        NUM
     }
+
 }
