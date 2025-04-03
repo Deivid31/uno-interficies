@@ -1,4 +1,4 @@
-package vista;
+package view;
 
 public class MainGUI extends javax.swing.JFrame {
 
