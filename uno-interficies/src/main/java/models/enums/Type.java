@@ -1,9 +1,10 @@
 package models.enums;
 
-public enum Power {
+public enum Type {
     BLOCK,
     SWAP,
     DRAW2,
     CHANGE_COLOR,
-    DRAW4
+    DRAW4,
+    NUM
 }

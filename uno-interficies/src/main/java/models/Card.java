@@ -1,15 +1,17 @@
 package models;
 
+import models.enums.Color;
+import models.enums.Type;
+
 public class Card {
-
     private int num;
-    private Cards.COLOR color;
-    private Cards.TYPE power;
+    private Color color;
+    private Type type;
 
-    public Card(int num, Cards.COLOR color, Cards.TYPE power) {
+    public Card(int num, Color color, Type type) {
         this.num = num;
         this.color = color;
-        this.power = power;
+        this.type = type;
     }
 
     public int getNum() {
@@ -20,25 +22,24 @@ public class Card {
         this.num = num;
     }
 
-    public Cards.COLOR getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(Cards.COLOR color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
-    public Cards.TYPE getPower() {
-        return power;
+    public Type getPower() {
+        return type;
     }
 
-    public void setPower(Cards.TYPE power) {
-        this.power = power;
+    public void setPower(Type type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return this.getColor().toString() + " " + this.getNum() + " (" + this.getPower().toString() + ")";
     }
-
 }

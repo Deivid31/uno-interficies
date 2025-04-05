@@ -1,6 +1,8 @@
 package models;
 
 import java.util.ArrayList;
+import models.enums.Color;
+import models.enums.Type;
 import random.Logger;
 
 public class Game {
@@ -44,31 +46,31 @@ public class Game {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i != 0) {
-                    Card card = new Card(i, Cards.COLOR.values()[j], Cards.TYPE.NUM);
-                    Card card2 = new Card(i, Cards.COLOR.values()[j], Cards.TYPE.NUM);
+                    Card card = new Card(i, Color.values()[j], Type.NUM);
+                    Card card2 = new Card(i, Color.values()[j], Type.NUM);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 } else {
-                    Card card = new Card(i, Cards.COLOR.values()[j], Cards.TYPE.NUM);
+                    Card card = new Card(i, Color.values()[j], Type.NUM);
                     drawDeck.add(card);
                 }
             }
         }
 
         for (int i = 0; i < 5; i++) {
-            if (!Cards.COLOR.values()[i].equals(Cards.COLOR.BLACK)) {
+            if (!Color.values()[i].equals(Color.BLACK)) {
                 for (int j = 0; j < 3; j++) {
-                    Card card = new Card(-j - 1, Cards.COLOR.values()[i], Cards.TYPE.values()[j]);
-                    Card card2 = new Card(-j - 1, Cards.COLOR.values()[i], Cards.TYPE.values()[j]);
+                    Card card = new Card(-j - 1, Color.values()[i], Type.values()[j]);
+                    Card card2 = new Card(-j - 1, Color.values()[i], Type.values()[j]);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
-                    Card card = new Card(-j - 4, Cards.COLOR.values()[i], Cards.TYPE.values()[j + 3]);
-                    Card card2 = new Card(-j - 4, Cards.COLOR.values()[i], Cards.TYPE.values()[j + 3]);
-                    Card card3 = new Card(-j - 4, Cards.COLOR.values()[i], Cards.TYPE.values()[j + 3]);
-                    Card card4 = new Card(-j - 4, Cards.COLOR.values()[i], Cards.TYPE.values()[j + 3]);
+                    Card card = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
+                    Card card2 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
+                    Card card3 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
+                    Card card4 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                     drawDeck.add(card3);
