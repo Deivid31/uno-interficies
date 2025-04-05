@@ -3,20 +3,20 @@ package models;
 import java.awt.CardLayout;
 import java.io.Serializable;
 import javax.swing.JPanel;
-import models.enums.Color;
+import models.enums.Type;
 import models.enums.Power;
 
 public class UnoCards extends JPanel implements Serializable {
     CardLayout sides;
-    Color color;
+    Type type;
     Power power;
     int number;
 
     public UnoCards() {
     }
 
-    public UnoCards(Color color, Power power, int number, JPanel front, JPanel back) {
-        this.color = color;
+    public UnoCards(Type type, Power power, int number, JPanel front, JPanel back) {
+        this.type = type;
         this.power = power;
         this.number = number;
         this.sides = new CardLayout();
@@ -24,3 +24,4 @@ public class UnoCards extends JPanel implements Serializable {
         this.sides.addLayoutComponent(back, "BACK");
     }
 }
+¡
