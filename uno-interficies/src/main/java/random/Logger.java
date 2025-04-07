@@ -12,4 +12,8 @@ public class Logger {
         System.out.println("[WARNING] [WARNING - " + project + "] -  " + error);
     }
 
+    public static void info(String str) {
+        System.out.println("[INFO - " + project + "] -  " + str);
+    }
+
 }
