@@ -5,13 +5,13 @@ import models.enums.Color;
 import models.enums.Type;
 import random.Logger;
 
-public class Juego {
+public class Game {
 
     private boolean gameStarted;
     private ArrayList<Card> drawDeck;
     private int turn;
 
-    public Juego() {
+    public Game() {
         drawDeck = new ArrayList<Card>();
         gameStarted = false;
         turn = 0;
