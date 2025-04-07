@@ -1,16 +1,16 @@
 package view;
 
-import models.Game;
+import models.Juego;
 
 public class MainGUI extends javax.swing.JFrame {
 
-    private Game game;
+    private Juego game;
 
     // Constructor
     public MainGUI() {
         initComponents();
 
-        game = new Game();
+        game = new Juego();
         game.startGame();
         game.startGame();
         game.fillDeck();
