@@ -7,20 +7,26 @@ import models.enums.Color;
 import models.enums.Type;
 
 public class Cards extends JPanel implements Serializable {
-    CardLayout sides;
-    Color color;
-    Type power;
-    int number;
-
-    public Cards() {
-    }
+    private final CardLayout sides = new CardLayout();
+    private final JPanel front;
+    private final JPanel back;
+    
+    private final Color color;
+    private final Type power;
+    private final int number;
 
     public Cards(Color color, Type power, int number, JPanel front, JPanel back) {
         this.color = color;
         this.power = power;
         this.number = number;
-        this.sides = new CardLayout();
-        this.sides.addLayoutComponent(front, "FRONT");
-        this.sides.addLayoutComponent(back, "BACK");
+        this.setLayout(sides);
+
+        this.front = front;
+        this.back = back;
+
+        this.add(this.front, "FRONT");
+        this.add(this.back, "BACK");
+
+        sides.show(this, "BACK");
     }
 }

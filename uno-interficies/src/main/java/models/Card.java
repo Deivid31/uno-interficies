@@ -1,9 +1,14 @@
 package models;
 
+import java.awt.CardLayout;
+import java.io.Serializable;
+import javax.swing.JPanel;
 import models.enums.Color;
 import models.enums.Type;
 
-public class Card {
+public class Card extends JPanel implements Serializable {
+    private final CardLayout sides = new CardLayout();
+    
     private int num;
     private Color color;
     private Type type;
