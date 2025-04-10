@@ -1,6 +1,13 @@
 package models;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import models.enums.Color;
 import models.enums.Type;
 import random.Logger;
@@ -10,6 +17,7 @@ public class Game {
     private boolean gameStarted;
     private ArrayList<Card> drawDeck;
     private int turn;
+    private Image img;
 
     public Game() {
         drawDeck = new ArrayList<Card>();
@@ -46,6 +54,17 @@ public class Game {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i != 0) {
+                    File imageFile = new File("src/img/variableC/numns");
+                    JPanel front = new JPanel() {
+                        @Override
+                        protected void paintComponent(Graphics g) {
+                            super.paintComponent(g);
+                            if (img != null)
+                            {
+                                g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
+                            }
+                        }
+                    };
                     Card card = new Card(i, Color.values()[j], Type.NUM);
                     Card card2 = new Card(i, Color.values()[j], Type.NUM);
                     drawDeck.add(card);
