@@ -12,8 +12,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         game = new Game();
         game.startGame();
-        game.startGame();
-        game.fillDeck();
     }
 
     /**
