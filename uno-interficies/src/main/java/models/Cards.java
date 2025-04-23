@@ -14,6 +14,14 @@ public class Cards extends JPanel implements Serializable {
     private final Color color;
     private final Type power;
     private final int number;
+    
+    public Cards() {    
+        this.front = null;
+        this.back = null;
+        this.color = null;
+        this.power = null;
+        this.number = 0;
+    }
 
     public Cards(Color color, Type power, int number, JPanel front, JPanel back) {
         this.color = color;
