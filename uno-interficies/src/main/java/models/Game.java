@@ -164,6 +164,8 @@ public class Game {
                 actualCard = card;
             }
 
+            boolean skipAdvance = false;
+
             switch (actualCard.getPower()) {
                 case CHANGE_COLOR:
                     actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
@@ -174,25 +176,39 @@ public class Game {
                     break;
 
                 case BLOCK:
-                    turn = (turn + direction < 0) ? 2 : (turn + direction > 2) ? 0 : turn + direction;
+                    // Saltar el siguiente jugador
+                    turn = (turn + direction + 3) % 3;
                     break;
 
                 case DRAW2:
-                    int turnTemp = (turn + direction < 0) ? 2 : (turn + direction > 2) ? 0 : turn + direction;
-                    playerDraws(npcs.get(turnTemp), 2);
+                    int draw2Target = (turn + direction + 3) % 3;
+                    playerDraws(npcs.get(draw2Target), 2);
+                    // Saltar al siguiente del que roba
+                    turn = (turn + 2 * direction + 3) % 3;
+                    skipAdvance = true;
                     break;
 
                 case DRAW4:
-                    turnTemp = (turn + direction > 2) ? 0 : turn + direction;
-                    playerDraws(npcs.get(turnTemp), 4);
+                    int draw4Target = (turn + direction + 3) % 3;
+                    playerDraws(npcs.get(draw4Target), 4);
                     actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
+                    // Saltar al siguiente del que roba
+                    turn = (turn + 2 * direction + 3) % 3;
+                    skipAdvance = true;
                     break;
             }
 
-            turn = (turn + direction < 0) ? 2 : (turn + direction > 2) ? 0 : turn + direction;
+            if (npcs.get(turn).getDeckSize() == 0) {
+                gameStarted = false;
+                System.out.println("¡Gana el jugador " + npcs.get(turn).getName() + "!");
+                break;
+            }
 
+            if (!skipAdvance) {
+                // Avanzar turno normalmente
+                turn = (turn + direction + 3) % 3;
+            }
         }
-
     }
 
 }

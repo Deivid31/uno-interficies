@@ -64,6 +64,10 @@ public class Npc {
         this.name = name;
     }
 
+    public int getDeckSize() {
+        return deck.size();
+    }
+
     public List<Card> getDeck() {
         return deck;
     }
