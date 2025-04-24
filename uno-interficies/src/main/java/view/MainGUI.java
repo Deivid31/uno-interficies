@@ -8,9 +8,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.Point2D;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import models.Cards;
@@ -24,7 +30,7 @@ public class MainGUI extends javax.swing.JFrame {
     private Image img;
 
     // Constructor
-    public MainGUI() {
+    public MainGUI() throws Exception {
         crearFondo();
         initComponents();
 
@@ -32,8 +38,15 @@ public class MainGUI extends javax.swing.JFrame {
         game = new Game();
         usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         usDeck.setPreferredSize(new Dimension(200, 100));
-        usDeck.setBackground(new java.awt.Color(169, 169, 169, 175));
-        deck.setOpaque(false);
+        usDeck.setBackground(java.awt.Color.gray);
+        gameDeck.setBackground(java.awt.Color.black);
+        ImageIcon imageIcon = new ImageIcon("src\\main\\java\\img\\reverso\\carta_detras.png"); // load the image to a imageIcon
+        Image image = imageIcon.getImage();
+        Image newimg = image.getScaledInstance(50, 75,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+        imageIcon = new ImageIcon(newimg);
+        placeHolder1.setIcon(imageIcon);
+        placeHolder2.setIcon(imageIcon);
+        placeHolder3.setIcon(imageIcon);
         //game.startGame();
 
     }
@@ -46,7 +59,7 @@ public class MainGUI extends javax.swing.JFrame {
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                card.setImagePath("src\\main\\java\\img\\rojo\\5_rojo.png");
+                card.setImagePath("src\\main\\java\\img\\rojo\\cinco_rojo.png");
                 card.repaint();
             }
 
@@ -138,8 +151,15 @@ public class MainGUI extends javax.swing.JFrame {
 
         usDeck = new javax.swing.JPanel();
         deck = new javax.swing.JPanel();
+        gameDeck = new javax.swing.JPanel();
+        placeHolder1 = new javax.swing.JLabel();
+        placeHolder2 = new javax.swing.JLabel();
+        placeHolder3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(500, 500));
+        setMinimumSize(new java.awt.Dimension(500, 500));
+        setPreferredSize(new java.awt.Dimension(500, 500));
 
         usDeck.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentAdded(java.awt.event.ContainerEvent evt) {
@@ -172,27 +192,65 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 75, Short.MAX_VALUE)
         );
 
+        gameDeck.setMinimumSize(new java.awt.Dimension(50, 75));
+        gameDeck.setPreferredSize(new java.awt.Dimension(52, 77));
+
+        javax.swing.GroupLayout gameDeckLayout = new javax.swing.GroupLayout(gameDeck);
+        gameDeck.setLayout(gameDeckLayout);
+        gameDeckLayout.setHorizontalGroup(
+            gameDeckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 52, Short.MAX_VALUE)
+        );
+        gameDeckLayout.setVerticalGroup(
+            gameDeckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 77, Short.MAX_VALUE)
+        );
+
+        placeHolder1.setText("p1");
+
+        placeHolder2.setText("p2");
+
+        placeHolder3.setText("p3");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(231, 231, 231)
-                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(231, Short.MAX_VALUE))
+            .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(40, 40, 40)
+                .addComponent(placeHolder1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(placeHolder3)
+                .addGap(36, 36, 36))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(223, 223, 223)
+                        .addComponent(placeHolder2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(148, Short.MAX_VALUE)
+                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(97, 97, 97)
+                        .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(188, 188, 188)
-                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(14, 14, 14))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(60, Short.MAX_VALUE)
+                .addComponent(placeHolder2)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(placeHolder3)
+                    .addComponent(placeHolder1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -205,6 +263,10 @@ public class MainGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel deck;
+    private javax.swing.JPanel gameDeck;
+    private javax.swing.JLabel placeHolder1;
+    private javax.swing.JLabel placeHolder2;
+    private javax.swing.JLabel placeHolder3;
     private javax.swing.JPanel usDeck;
     // End of variables declaration//GEN-END:variables
 }
