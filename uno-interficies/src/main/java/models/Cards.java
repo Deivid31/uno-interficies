@@ -7,11 +7,11 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
-
 import models.enums.Colors;
 import models.enums.Type;
 
 public class Cards extends JPanel implements Serializable {
+
     private final Colors color;
     private final Type power;
     private final int number;
@@ -29,9 +29,8 @@ public class Cards extends JPanel implements Serializable {
         this.color = color;
         this.power = power;
         this.number = number;
-        setOpaque(true);
         setPreferredSize(new Dimension(40, 65));
-        
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -42,7 +41,7 @@ public class Cards extends JPanel implements Serializable {
             public void mouseReleased(MouseEvent e) {
                 if (interfaceEventDraw != null) {
                     interfaceEventDraw.cardTurn(); // Will handle image + spawning
-                    
+
                     Point screenPoint = e.getLocationOnScreen();
                     //interfaceEventDraw.cardDropped(Cards.this, screenPoint);
                 }
@@ -68,13 +67,26 @@ public class Cards extends JPanel implements Serializable {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g);  // Llamada a super para asegurar que el panel se dibuje correctamente
+        setOpaque(false);
+
+        // Ruta de la imagen
         File imgFile = new File(imagePath);
+
         if (imgFile.exists()) {
-            ImageIcon imageIcon = new ImageIcon(imgFile.getAbsolutePath());
-            g.drawImage(imageIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            try {
+                // Cargar la imagen
+                ImageIcon imageIcon = new ImageIcon(imgFile.getAbsolutePath());
+                Image img = imageIcon.getImage();
+
+                // Dibujar la imagen respetando su transparencia
+                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+            } catch (Exception e) {
+                g.drawString("Error al cargar la imagen", 10, 20);  // Mostrar mensaje de error si algo falla
+                e.printStackTrace();
+            }
         } else {
-            g.drawString("Imagen no encontrada", 10, 20);
+            g.drawString("Imagen no encontrada", 10, 20);  // Si no encuentra la imagen
         }
     }
 
@@ -89,6 +101,7 @@ public class Cards extends JPanel implements Serializable {
     public int getNum() {
         return number;
     }
+
     public void addInterfaceEventDraw(InterfaceEventDraw ied) {
         this.interfaceEventDraw = ied;
     }
@@ -96,6 +109,7 @@ public class Cards extends JPanel implements Serializable {
     public void setIsDetached(boolean isDetached) {
         this.isDetached = isDetached;
     }
+
     public boolean isDetached() {
         return isDetached;
     }
