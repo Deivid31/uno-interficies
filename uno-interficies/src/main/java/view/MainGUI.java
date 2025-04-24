@@ -3,16 +3,11 @@ package view;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import models.Card;
 import models.Cards;
 import models.Game;
 import models.InterfaceEventDraw;
@@ -26,7 +21,7 @@ public class MainGUI extends javax.swing.JFrame {
         initComponents();
         addNewCardToDeck(deck);
         game = new Game();
-        usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 1));
+        usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         usDeck.setPreferredSize(new Dimension(200, 100));
         usDeck.setBackground(java.awt.Color.gray);
         //game.startGame();
@@ -40,15 +35,32 @@ public class MainGUI extends javax.swing.JFrame {
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                card.setImagePath("C:\\Users\\Admin\\Desktop\\Izan\\DAM2\\M7 Desarrollo de interfaces\\UF1\\Un2\\Practicas\\uno-interficies\\uno-interficies\\src\\main\\java\\img\\rojo\\cinco_rojo.png");
+                card.setImagePath("src\\main\\java\\img\\rojo\\cinco_rojo.png");
                 card.repaint();
             }
 
             @Override
             public void cardDrag() {
-                deckPanel.remove(card);
-                deckPanel.repaint();
-                addNewCardToDeck(deckPanel);
+                Container topLevel = card.getTopLevelAncestor();
+                if (!(topLevel instanceof JFrame)) return;
+                JFrame frame = (JFrame) topLevel;
+
+                if (!card.isDetached()) {
+                    Container parent = card.getParent();
+                    if (parent != null) {
+                        parent.remove(card);
+                        frame.getContentPane().add(card);
+                        frame.getContentPane().setComponentZOrder(card, 0); // Bring to front
+                        Point globalPos = SwingUtilities.convertPoint(parent, card.getLocation(), frame.getContentPane());
+                        card.setLocation(globalPos);
+                        card.setSize(50, 75); // or card.getPreferredSize()
+                        card.setIsDetached(true);
+                        parent.repaint();
+                    }
+
+                    // Replace card in deck
+                    addNewCardToDeck(deckPanel);
+                }
             }
             
             @Override
