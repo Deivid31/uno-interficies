@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import models.enums.Color;
+import models.enums.Colors;
 import models.enums.Type;
 import static models.enums.Type.CHANGE_COLOR;
 import static models.enums.Type.DRAW2;
@@ -58,29 +58,29 @@ public class Game {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i != 0) {
-                    Card card = new Card(i, Color.values()[j], Type.NUM);
-                    Card card2 = new Card(i, Color.values()[j], Type.NUM);
+                    Card card = new Card(i, Colors.values()[j], Type.NUM);
+                    Card card2 = new Card(i, Colors.values()[j], Type.NUM);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 } else {
-                    Card card = new Card(i, Color.values()[j], Type.NUM);
+                    Card card = new Card(i, Colors.values()[j], Type.NUM);
                     drawDeck.add(card);
                 }
             }
         }
 
         for (int i = 0; i < 5; i++) {
-            if (!Color.values()[i].equals(Color.BLACK)) {
+            if (!Colors.values()[i].equals(Colors.BLACK)) {
                 for (int j = 0; j < 3; j++) {
-                    Card card = new Card(-j - 1, Color.values()[i], Type.values()[j]);
-                    Card card2 = new Card(-j - 1, Color.values()[i], Type.values()[j]);
+                    Card card = new Card(-j - 1, Colors.values()[i], Type.values()[j]);
+                    Card card2 = new Card(-j - 1, Colors.values()[i], Type.values()[j]);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
                     for (int k = 0; k < 4; k++) {
-                        Card card = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
+                        Card card = new Card(-j - 4, Colors.values()[i], Type.values()[j + 3]);
                         drawDeck.add(card);
                     }
                 }
@@ -166,7 +166,7 @@ public class Game {
         boolean skipAdvance = false;
         switch (card.getPower()) {
             case CHANGE_COLOR:
-                actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
+                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Type.NUM);
                 break;
             case SWAP:
                 direction *= -1;
@@ -183,7 +183,7 @@ public class Game {
             case DRAW4:
                 int draw4Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw4Target), 4);
-                actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
+                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Type.NUM);
                 turn = (turn + 2 * direction + players.size()) % players.size();
                 skipAdvance = true;
                 break;

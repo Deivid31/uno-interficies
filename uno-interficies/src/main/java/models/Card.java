@@ -3,17 +3,17 @@ package models;
 import java.awt.CardLayout;
 import java.io.Serializable;
 import javax.swing.JPanel;
-import models.enums.Color;
+import models.enums.Colors;
 import models.enums.Type;
 
 public class Card extends JPanel implements Serializable {
     private final CardLayout sides = new CardLayout();
     
     private int num;
-    private Color color;
+    private Colors color;
     private Type type;
 
-    public Card(int num, Color color, Type type) {
+    public Card(int num, Colors color, Type type) {
         this.num = num;
         this.color = color;
         this.type = type;
@@ -27,11 +27,11 @@ public class Card extends JPanel implements Serializable {
         this.num = num;
     }
 
-    public Color getColor() {
+    public Colors getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(Colors color) {
         this.color = color;
     }
 

@@ -8,11 +8,11 @@ import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
 
-import models.enums.Color;
+import models.enums.Colors;
 import models.enums.Type;
 
 public class Cards extends JPanel implements Serializable {
-    private final Color color;
+    private final Colors color;
     private final Type power;
     private final int number;
 
@@ -22,10 +22,10 @@ public class Cards extends JPanel implements Serializable {
     private boolean isDetached = false;
 
     public Cards() {
-        this(Color.RED, Type.NUM, 0); // Default values
+        this(Colors.RED, Type.NUM, 0); // Default values
     }
 
-    public Cards(Color color, Type power, int number) {
+    public Cards(Colors color, Type power, int number) {
         this.color = color;
         this.power = power;
         this.number = number;
@@ -78,7 +78,7 @@ public class Cards extends JPanel implements Serializable {
         }
     }
 
-    public Color getColor() {
+    public Colors getColor() {
         return color;
     }
 

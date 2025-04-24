@@ -1,7 +1,7 @@
 package models;
 
 import java.util.Random;
-import models.enums.Color;
+import models.enums.Colors;
 import models.enums.Names;
 import random.Logger;
 
@@ -16,7 +16,7 @@ public class Npc extends iPlayer {
     public Card playCard(Card actual) {
         // Va comprobando todo su mazo en busca de una carta que tirar
         for (Card card : deck) {
-            if (card.getColor().equals(actual.getColor()) || card.getColor().equals(Color.BLACK) || card.getNum() == actual.getNum()) {
+            if (card.getColor().equals(actual.getColor()) || card.getColor().equals(Colors.BLACK) || card.getNum() == actual.getNum()) {
                 waitTime(1000);
                 deck.remove(card);
                 Logger.npcPlays(this, card);
@@ -26,7 +26,7 @@ public class Npc extends iPlayer {
 
         // Si no ha encontrado una carta roba y la intenta tirar
         Card drawCard = game.draw();
-        if (drawCard.getColor().equals(actual.getColor()) || drawCard.getColor().equals(Color.BLACK) || drawCard.getNum() == actual.getNum()) {
+        if (drawCard.getColor().equals(actual.getColor()) || drawCard.getColor().equals(Colors.BLACK) || drawCard.getNum() == actual.getNum()) {
             waitTime(1000);
             deck.remove(drawCard);
             Logger.npcPlays(this, drawCard);

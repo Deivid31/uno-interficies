@@ -1,19 +1,22 @@
 package view;
 
-import java.awt.Image;
-import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RadialGradientPaint;
+import java.awt.geom.Point2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import models.Cards;
 import models.Game;
 import models.InterfaceEventDraw;
-import models.enums.Color;
+import models.enums.Colors;
 
 public class MainGUI extends javax.swing.JFrame {
 
@@ -22,18 +25,21 @@ public class MainGUI extends javax.swing.JFrame {
 
     // Constructor
     public MainGUI() {
+        crearFondo();
         initComponents();
+
         addNewCardToDeck(deck);
         game = new Game();
         usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         usDeck.setPreferredSize(new Dimension(200, 100));
         usDeck.setBackground(java.awt.Color.gray);
         //game.startGame();
+
     }
 
     // Funcion para el mazo (Estatico de momento)
     private void addNewCardToDeck(JPanel deckPanel) {
-        Cards card = new Cards(Color.RED, models.enums.Type.NUM, 0); // Datos por defecto
+        Cards card = new Cards(Colors.RED, models.enums.Type.NUM, 0); // Datos por defecto
         card.setBounds(0, 0, 50, 75); //Posicion de la carta en el mazo
 
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
@@ -46,7 +52,9 @@ public class MainGUI extends javax.swing.JFrame {
             @Override
             public void cardDrag() {
                 Container topLevel = card.getTopLevelAncestor();
-                if (!(topLevel instanceof JFrame)) return;
+                if (!(topLevel instanceof JFrame)) {
+                    return;
+                }
                 JFrame frame = (JFrame) topLevel;
 
                 if (!card.isDetached()) {
@@ -66,7 +74,7 @@ public class MainGUI extends javax.swing.JFrame {
                     addNewCardToDeck(deckPanel);
                 }
             }
-            
+
             @Override
             public void cardDropped(Cards droppedCard, Point screenPoint) {
                 // Make a copy of the screen point
@@ -81,7 +89,7 @@ public class MainGUI extends javax.swing.JFrame {
                         parent.remove(droppedCard);
                         parent.repaint();
                     }
-                    
+
                     droppedCard.setIsDetached(false);
                     usDeck.add(droppedCard);
                     usDeck.revalidate();
@@ -91,6 +99,33 @@ public class MainGUI extends javax.swing.JFrame {
         });
         deckPanel.add(card);
         deckPanel.repaint();
+    }
+
+    private void crearFondo() {
+        setContentPane(new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                // Se crea un objeto Graphics2D para usar gradientes
+                Graphics2D g2d = (Graphics2D) g;
+
+                // Se define el degradado: rojo oscuro (en las esquinas) a rojo claro (en el centro)
+                Color rojoOscuro = new Color(139, 0, 0); // Rojo oscuro
+                Color rojoClaro = new Color(255, 102, 102); // Rojo claro
+
+                // Degradado radiactivo: centro a los bordes
+                RadialGradientPaint gradiente = new RadialGradientPaint(
+                        new Point2D.Float(getWidth() / 2, getHeight() / 2), // Centro del gradiente
+                        getWidth() / 2, // Radio del gradiente
+                        new float[]{0f, 1f}, // Distribución del color (más claro en el centro)
+                        new Color[]{rojoClaro, rojoOscuro} // Colores del gradiente
+                );
+
+                g2d.setPaint(gradiente);
+                g2d.fillRect(0, 0, getWidth(), getHeight()); // Rellenar con el gradiente
+            }
+        });
     }
 
     /**
