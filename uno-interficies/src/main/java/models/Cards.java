@@ -44,7 +44,7 @@ public class Cards extends JPanel implements Serializable {
                     interfaceEventDraw.cardTurn(); // Will handle image + spawning
                     
                     Point screenPoint = e.getLocationOnScreen();
-                    interfaceEventDraw.cardDropped(Cards.this, screenPoint);
+                    //interfaceEventDraw.cardDropped(Cards.this, screenPoint);
                 }
             }
         });

@@ -199,4 +199,8 @@ public class Game {
             System.out.println("¡Gana el jugador " + players.get(turn).getName() + "!");
         }
     }
+    
+    public List<iPlayer> getPlayers() {
+        return players;
+    }
 }

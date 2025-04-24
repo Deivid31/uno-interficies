@@ -19,10 +19,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import models.Card;
 import models.Cards;
 import models.Game;
+import models.Human;
 import models.InterfaceEventDraw;
 import models.enums.Colors;
+import models.iPlayer;
 
 public class MainGUI extends javax.swing.JFrame {
 
@@ -47,19 +50,19 @@ public class MainGUI extends javax.swing.JFrame {
         placeHolder1.setIcon(imageIcon);
         placeHolder2.setIcon(imageIcon);
         placeHolder3.setIcon(imageIcon);
-        //game.startGame();
-
+        game.startGame();
+        displayHumanDeck();
     }
 
     // Funcion para el mazo (Estatico de momento)
     private void addNewCardToDeck(JPanel deckPanel) {
-        Cards card = new Cards(Colors.RED, models.enums.Type.NUM, 0); // Datos por defecto
+        Card card = new Card(0, Colors.RED, models.enums.Type.NUM); // Datos por defecto
         card.setBounds(0, 0, 50, 75); //Posicion de la carta en el mazo
 
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                card.setImagePath("src\\main\\java\\img\\rojo\\cinco_rojo.png");
+                card.setImagePath("src\\main\\java\\img\\rojo\\5_rojo.png");
                 card.repaint();
             }
 
@@ -90,7 +93,7 @@ public class MainGUI extends javax.swing.JFrame {
             }
 
             @Override
-            public void cardDropped(Cards droppedCard, Point screenPoint) {
+            public void cardDropped(Card droppedCard, Point screenPoint) {
                 // Make a copy of the screen point
                 Point panelPoint = new Point(screenPoint);
 
@@ -142,6 +145,34 @@ public class MainGUI extends javax.swing.JFrame {
         });
     }
 
+    private void displayHumanDeck() {
+        // Clear existing cards if any
+        usDeck.removeAll();
+
+        // Get human player
+        Human human = null;
+        for (iPlayer player : game.getPlayers()) {
+            if (player instanceof Human) {
+                human = (Human) player;
+                break;
+            }
+        }
+
+        if (human == null) {
+            System.err.println("No human player found!");
+            return;
+        }
+
+        // Add each card to the GUI
+        for (Card card : human.getDeck()) {
+            Card visualCard = card;  // your custom component
+            visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png"); // if needed
+            visualCard.setPreferredSize(new Dimension(50, 75));
+            usDeck.add(visualCard);
+        }
+        usDeck.revalidate();
+        usDeck.repaint();
+    }
     /**
      * No borrar
      */
