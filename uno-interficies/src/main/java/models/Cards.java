@@ -7,11 +7,11 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
+
 import models.enums.Color;
 import models.enums.Type;
 
 public class Cards extends JPanel implements Serializable {
-
     private final Color color;
     private final Type power;
     private final int number;
@@ -30,7 +30,8 @@ public class Cards extends JPanel implements Serializable {
         this.power = power;
         this.number = number;
         setOpaque(true);
-
+        setPreferredSize(new Dimension(40, 65));
+        
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -41,6 +42,9 @@ public class Cards extends JPanel implements Serializable {
             public void mouseReleased(MouseEvent e) {
                 if (interfaceEventDraw != null) {
                     interfaceEventDraw.cardTurn(); // Will handle image + spawning
+                    
+                    Point screenPoint = e.getLocationOnScreen();
+                    interfaceEventDraw.cardDropped(Cards.this, screenPoint);
                 }
             }
         });
@@ -48,32 +52,12 @@ public class Cards extends JPanel implements Serializable {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                Container topLevel = getTopLevelAncestor();
-                if (!(topLevel instanceof JFrame)) {
-                    return;
-                }
-                JFrame frame = (JFrame) topLevel;
-
-                // Saca la carta actual del mazo
-                if (!isDetached && getParent() != null) {
-                    Container parent = getParent();
-                    parent.remove(Cards.this);
-                    frame.getContentPane().add(Cards.this);
-                    frame.getContentPane().setComponentZOrder(Cards.this, 0);
-                    Point globalPos = SwingUtilities.convertPoint(parent, getLocation(), frame.getContentPane());
-                    setLocation(globalPos);
-                    setSize(50, 75);
-                    isDetached = true;
-
-                    if (interfaceEventDraw != null) {
-                        interfaceEventDraw.cardDrag();
-                    }
+                if (interfaceEventDraw != null) {
+                    interfaceEventDraw.cardDrag();
                 }
 
                 // Para mover la carta
-                Point mousePos = SwingUtilities.convertPoint(Cards.this, e.getPoint(), frame.getContentPane());
-                setLocation(mousePos.x - clickOffset.x, mousePos.y - clickOffset.y);
-                frame.repaint();
+                setLocation(getX() + e.getX() - clickOffset.x, getY() + e.getY() - clickOffset.y);
             }
         });
     }
@@ -105,8 +89,14 @@ public class Cards extends JPanel implements Serializable {
     public int getNum() {
         return number;
     }
-
     public void addInterfaceEventDraw(InterfaceEventDraw ied) {
         this.interfaceEventDraw = ied;
+    }
+
+    public void setIsDetached(boolean isDetached) {
+        this.isDetached = isDetached;
+    }
+    public boolean isDetached() {
+        return isDetached;
     }
 }
