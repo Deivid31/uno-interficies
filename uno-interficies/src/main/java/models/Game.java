@@ -1,13 +1,7 @@
 package models;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.io.File;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import java.util.List;
 import java.util.Random;
 import models.enums.Color;
@@ -20,10 +14,9 @@ import random.Logger;
 public class Game {
 
     private Random random;
-
     private boolean gameStarted;
     private ArrayList<Card> drawDeck;
-    private ArrayList<Npc> npcs;
+    private ArrayList<iPlayer> players;
     private Card actualCard;
     private int turn;
     private Image img;
@@ -31,61 +24,40 @@ public class Game {
 
     public Game() {
         random = new Random();
-        drawDeck = new ArrayList<Card>();
-        npcs = new ArrayList<Npc>();
+        drawDeck = new ArrayList<>();
+        players = new ArrayList<>();
         gameStarted = false;
         turn = 0;
         direction = 1;
-        this.fillDeck();
+        fillDeck();
 
-        npcs.add(new Npc(this));
-        npcs.add(new Npc(this));
-        npcs.add(new Npc(this));
+        players.add(new Npc(this));
+        players.add(new Npc(this));
+        players.add(new Npc(this));
+        players.add(new Human(this));
 
         startCard();
-
     }
 
-    /**
-     * Al llamarlo inicia una nueva partida, si la partida anterior aún está
-     * activa no hará nada
-     *
-     */
     public void startGame() {
-        // Comprobar que el juego no sea nul·lo
-        if (this.gameStarted) {
+        if (gameStarted) {
             Logger.error("Ya hay una partida empezada");
             return;
         }
 
         gameStarted = true;
-        gameCicle();
-
+        nextTurn();
     }
 
     public void fillDeck() {
-        // Por si acaso nos interesa saber
         if (!drawDeck.isEmpty()) {
             Logger.warn("Se ha rellenado el mazo sin estar vacío");
         }
-
-        // Borra todas las cartas
         drawDeck.clear();
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i != 0) {
-                    File imageFile = new File("src/img/variableC/numns");
-                    JPanel front = new JPanel() {
-                        @Override
-                        protected void paintComponent(Graphics g) {
-                            super.paintComponent(g);
-                            if (img != null)
-                            {
-                                g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
-                            }
-                        }
-                    };
                     Card card = new Card(i, Color.values()[j], Type.NUM);
                     Card card2 = new Card(i, Color.values()[j], Type.NUM);
                     drawDeck.add(card);
@@ -107,108 +79,124 @@ public class Game {
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
-                    Card card = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
-                    Card card2 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
-                    Card card3 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
-                    Card card4 = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
-                    drawDeck.add(card);
-                    drawDeck.add(card2);
-                    drawDeck.add(card3);
-                    drawDeck.add(card4);
+                    for (int k = 0; k < 4; k++) {
+                        Card card = new Card(-j - 4, Color.values()[i], Type.values()[j + 3]);
+                        drawDeck.add(card);
+                    }
                 }
             }
         }
 
-        Logger.info("La pila de robo ahora tiene " + drawDeck.size() + "cartas");
-
+        Logger.info("La pila de robo ahora tiene " + drawDeck.size() + " cartas");
     }
 
     public Card draw() {
         return drawDeck.get(random.nextInt(drawDeck.size()));
     }
 
-    public void playerDraws(Npc npc, int qty) {
+    public void playerDraws(iPlayer player, int qty) {
         for (int i = 0; i < qty; i++) {
-            npc.getDeck().add(drawDeck.get(random.nextInt(drawDeck.size())));
+            player.getDeck().add(drawDeck.get(random.nextInt(drawDeck.size())));
         }
     }
 
     public void startCard() {
         Card card = drawDeck.get(random.nextInt(drawDeck.size()));
-
         actualCard = card;
-
         drawDeck.remove(card);
     }
 
     public List<Card> stratingCards() {
-        ArrayList<Card> result = new ArrayList<Card>();
-
+        ArrayList<Card> result = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             Card card = drawDeck.get(random.nextInt(drawDeck.size()));
             result.add(card);
             drawDeck.remove(card);
         }
-
         return result;
-
     }
 
-    public void gameCicle() {
+    public void nextTurn() {
+        if (!gameStarted) {
+            return;
+        }
 
-        while (gameStarted) {
+        iPlayer current = players.get(turn);
 
-            Card card = npcs.get(turn).playCard(actualCard);
+        if (current instanceof Human) {
+            Logger.info("Esperando acción del jugador humano...");
+            ((Human) current).setTurn(true);
+            return;
+        }
 
-            if (card != null) {
-                actualCard = card;
-            }
+        Card card = current.playCard(actualCard);
+        if (card != null) {
+            actualCard = card;
+        }
 
-            boolean skipAdvance = false;
+        handleSpecialCard(actualCard);
+        checkEndGame();
+        advanceTurn();
+    }
 
-            switch (actualCard.getPower()) {
-                case CHANGE_COLOR:
-                    actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
-                    break;
+    public void playHumanCard(Card card) {
+        iPlayer current = players.get(turn);
+        if (!(current instanceof Human)) {
+            return;
+        }
 
-                case SWAP:
-                    direction *= -1;
-                    break;
-
-                case BLOCK:
-                    // Saltar el siguiente jugador
-                    turn = (turn + direction + 3) % 3;
-                    break;
-
-                case DRAW2:
-                    int draw2Target = (turn + direction + 3) % 3;
-                    playerDraws(npcs.get(draw2Target), 2);
-                    // Saltar al siguiente del que roba
-                    turn = (turn + 2 * direction + 3) % 3;
-                    skipAdvance = true;
-                    break;
-
-                case DRAW4:
-                    int draw4Target = (turn + direction + 3) % 3;
-                    playerDraws(npcs.get(draw4Target), 4);
-                    actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
-                    // Saltar al siguiente del que roba
-                    turn = (turn + 2 * direction + 3) % 3;
-                    skipAdvance = true;
-                    break;
-            }
-
-            if (npcs.get(turn).getDeckSize() == 0) {
-                gameStarted = false;
-                System.out.println("¡Gana el jugador " + npcs.get(turn).getName() + "!");
-                break;
-            }
-
-            if (!skipAdvance) {
-                // Avanzar turno normalmente
-                turn = (turn + direction + 3) % 3;
-            }
+        if (((Human) current).canPlay(card, actualCard)) {
+            current.getDeck().remove(card);
+            actualCard = card;
+            Logger.humanPlays((Human) current, card);
+            handleSpecialCard(actualCard);
+            checkEndGame();
+            advanceTurn();
+        } else {
+            Logger.error("Carta inválida para jugar");
         }
     }
 
+    private void advanceTurn() {
+        turn = (turn + direction + players.size()) % players.size();
+        nextTurn();
+    }
+
+    private void handleSpecialCard(Card card) {
+        boolean skipAdvance = false;
+        switch (card.getPower()) {
+            case CHANGE_COLOR:
+                actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
+                break;
+            case SWAP:
+                direction *= -1;
+                break;
+            case BLOCK:
+                turn = (turn + direction + players.size()) % players.size();
+                break;
+            case DRAW2:
+                int draw2Target = (turn + direction + players.size()) % players.size();
+                playerDraws(players.get(draw2Target), 2);
+                turn = (turn + 2 * direction + players.size()) % players.size();
+                skipAdvance = true;
+                break;
+            case DRAW4:
+                int draw4Target = (turn + direction + players.size()) % players.size();
+                playerDraws(players.get(draw4Target), 4);
+                actualCard = new Card(-6, Color.values()[random.nextInt(4)], Type.NUM);
+                turn = (turn + 2 * direction + players.size()) % players.size();
+                skipAdvance = true;
+                break;
+        }
+        if (!skipAdvance) {
+            turn = (turn + direction + players.size()) % players.size();
+        }
+    }
+
+    private void checkEndGame() {
+        if (players.get(turn).getDeckSize() == 0) {
+            gameStarted = false;
+            System.out.println("¡Gana el jugador " + players.get(turn).getName() + "!");
+        }
+    }
 }

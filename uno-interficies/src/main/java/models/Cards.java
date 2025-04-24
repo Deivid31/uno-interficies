@@ -7,16 +7,16 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
-
 import models.enums.Color;
 import models.enums.Type;
 
 public class Cards extends JPanel implements Serializable {
+
     private final Color color;
     private final Type power;
     private final int number;
 
-    private String imagePath = "C:\\Users\\Admin\\Desktop\\Izan\\DAM2\\M7 Desarrollo de interfaces\\UF1\\Un2\\Practicas\\uno-interficies\\uno-interficies\\src\\main\\java\\img\\reverso\\carta_detras.png";
+    private String imagePath = "src\\main\\java\\img\\reverso\\carta_detras.png";
     private InterfaceEventDraw interfaceEventDraw;
     private Point clickOffset;
     private boolean isDetached = false;
@@ -49,7 +49,9 @@ public class Cards extends JPanel implements Serializable {
             @Override
             public void mouseDragged(MouseEvent e) {
                 Container topLevel = getTopLevelAncestor();
-                if (!(topLevel instanceof JFrame)) return;
+                if (!(topLevel instanceof JFrame)) {
+                    return;
+                }
                 JFrame frame = (JFrame) topLevel;
 
                 // Saca la carta actual del mazo
@@ -103,6 +105,7 @@ public class Cards extends JPanel implements Serializable {
     public int getNum() {
         return number;
     }
+
     public void addInterfaceEventDraw(InterfaceEventDraw ied) {
         this.interfaceEventDraw = ied;
     }

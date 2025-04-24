@@ -1,6 +1,7 @@
 package random;
 
 import models.Card;
+import models.Human;
 import models.Npc;
 
 public class Logger {
@@ -28,6 +29,18 @@ public class Logger {
     public static void npcDraws(Npc npc, Card card) {
         System.out.println("[CARD - " + project + "] -  " + npc.getName() + " ha robado: " + card.toString());
         System.out.println("[CARD - " + project + "] -  A " + npc.getName() + " tiene: " + npc.getDeck().size());
+        System.out.println("");
+    }
+
+    public static void humanPlays(Human human, Card card) {
+        System.out.println("[CARD - " + project + "] -  " + human.getName() + " ha jugado: " + card.toString());
+        System.out.println("[CARD - " + project + "] -  A " + human.getName() + " le quedan: " + human.getDeck().size());
+        System.out.println("");
+    }
+
+    public static void humanDraws(Human human, Card card) {
+        System.out.println("[CARD - " + project + "] -  " + human.getName() + " ha robado: " + card.toString());
+        System.out.println("[CARD - " + project + "] -  A " + human.getName() + " tiene: " + human.getDeck().size());
         System.out.println("");
     }
 

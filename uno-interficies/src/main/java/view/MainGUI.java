@@ -1,29 +1,23 @@
 package view;
 
-import java.awt.Container;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.io.File;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import models.Card;
 import models.Cards;
 import models.Game;
 import models.InterfaceEventDraw;
 import models.enums.Color;
 
 public class MainGUI extends javax.swing.JFrame {
+
     private Game game;
     private Image img;
+
     // Constructor
     public MainGUI() {
         initComponents();
         addNewCardToDeck(deck);
         game = new Game();
-        //game.startGame();
+        game.startGame();
     }
 
     // Funcion para el mazo (Estatico de momento)
@@ -34,7 +28,7 @@ public class MainGUI extends javax.swing.JFrame {
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                card.setImagePath("C:\\Users\\Admin\\Desktop\\Izan\\DAM2\\M7 Desarrollo de interfaces\\UF1\\Un2\\Practicas\\uno-interficies\\uno-interficies\\src\\main\\java\\img\\rojo\\cinco_rojo.png");
+                card.setImagePath("src\\main\\java\\img\\rojo\\cinco_rojo.png");
                 card.repaint();
             }
 
@@ -48,6 +42,7 @@ public class MainGUI extends javax.swing.JFrame {
         deckPanel.add(card);
         deckPanel.repaint();
     }
+
     /**
      * No borrar
      */
