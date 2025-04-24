@@ -1,46 +1,52 @@
 package view;
 
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import models.Card;
 import models.Cards;
 import models.Game;
+import models.InterfaceEventDraw;
 import models.enums.Color;
 
 public class MainGUI extends javax.swing.JFrame {
-
     private Game game;
     private Image img;
     // Constructor
     public MainGUI() {
         initComponents();
+        addNewCardToDeck(deck);
         game = new Game();
-        game.startGame();
-        File imageFile = new File("src/img/variableC/numns");
-        JPanel front = new JPanel() {
+        //game.startGame();
+    }
+
+    // Funcion para el mazo (Estatico de momento)
+    private void addNewCardToDeck(JPanel deckPanel) {
+        Cards card = new Cards(Color.RED, models.enums.Type.NUM, 0); // Datos por defecto
+        card.setBounds(0, 0, 50, 75); //Posicion de la carta en el mazo
+
+        card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (img != null)
-                {
-                    g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
-                }
+            public void cardTurn() {
+                card.setImagePath("C:\\Users\\Admin\\Desktop\\Izan\\DAM2\\M7 Desarrollo de interfaces\\UF1\\Un2\\Practicas\\uno-interficies\\uno-interficies\\src\\main\\java\\img\\rojo\\cinco_rojo.png");
+                card.repaint();
             }
-        };
-        JPanel back = new JPanel() {
+
             @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (img != null)
-                {
-                    g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
-                }
+            public void cardDrag() {
+                //deckPanel.remove(card);
+                //deckPanel.repaint();
+                //addNewCardToDeck(deckPanel);
             }
-        };
-        Card card = new Card(3, Color.values()[2], models.enums.Type.NUM);
-        usDeck.add(card);
+        });
+        deckPanel.add(card);
+        deckPanel.repaint();
     }
     /**
      * No borrar
@@ -50,6 +56,7 @@ public class MainGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         usDeck = new javax.swing.JPanel();
+        deck = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,20 +77,42 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        deck.setMinimumSize(new java.awt.Dimension(50, 75));
+        deck.setPreferredSize(new java.awt.Dimension(50, 75));
+
+        javax.swing.GroupLayout deckLayout = new javax.swing.GroupLayout(deck);
+        deck.setLayout(deckLayout);
+        deckLayout.setHorizontalGroup(
+            deckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 50, Short.MAX_VALUE)
+        );
+        deckLayout.setVerticalGroup(
+            deckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 75, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(84, 84, 84)
-                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(95, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(219, 219, 219)
+                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 284, Short.MAX_VALUE)
-                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(147, Short.MAX_VALUE)
+                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
+                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -95,6 +124,7 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_usDeckComponentAdded
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel deck;
     private javax.swing.JPanel usDeck;
     // End of variables declaration//GEN-END:variables
 }

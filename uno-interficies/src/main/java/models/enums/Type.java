@@ -7,5 +7,4 @@ public enum Type {
     CHANGE_COLOR,
     DRAW4,
     NUM;
-
 }
