@@ -1,8 +1,11 @@
 package view;
 
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
@@ -23,6 +26,9 @@ public class MainGUI extends javax.swing.JFrame {
         initComponents();
         addNewCardToDeck(deck);
         game = new Game();
+        usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 1));
+        usDeck.setPreferredSize(new Dimension(200, 100));
+        usDeck.setBackground(java.awt.Color.gray);
         //game.startGame();
     }
 
@@ -40,9 +46,31 @@ public class MainGUI extends javax.swing.JFrame {
 
             @Override
             public void cardDrag() {
-                //deckPanel.remove(card);
-                //deckPanel.repaint();
-                //addNewCardToDeck(deckPanel);
+                deckPanel.remove(card);
+                deckPanel.repaint();
+                addNewCardToDeck(deckPanel);
+            }
+            
+            @Override
+            public void cardDropped(Cards droppedCard, Point screenPoint) {
+                // Make a copy of the screen point
+                Point panelPoint = new Point(screenPoint);
+
+                SwingUtilities.convertPointFromScreen(panelPoint, usDeck);
+
+                // Now you can check if the point lies within usDeck
+                if (usDeck.contains(panelPoint)) {
+                    Container parent = droppedCard.getParent();
+                    if (parent != null) {
+                        parent.remove(droppedCard);
+                        parent.repaint();
+                    }
+                    
+                    droppedCard.setIsDetached(false);
+                    usDeck.add(droppedCard);
+                    usDeck.revalidate();
+                    usDeck.repaint();
+                }
             }
         });
         deckPanel.add(card);
@@ -70,7 +98,7 @@ public class MainGUI extends javax.swing.JFrame {
         usDeck.setLayout(usDeckLayout);
         usDeckLayout.setHorizontalGroup(
             usDeckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         usDeckLayout.setVerticalGroup(
             usDeckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -96,14 +124,13 @@ public class MainGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(219, 219, 219)
-                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addGap(219, 219, 219)
+                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(243, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

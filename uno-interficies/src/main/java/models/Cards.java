@@ -30,7 +30,8 @@ public class Cards extends JPanel implements Serializable {
         this.power = power;
         this.number = number;
         setOpaque(true);
-
+        setPreferredSize(new Dimension(40, 65));
+        
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -41,6 +42,9 @@ public class Cards extends JPanel implements Serializable {
             public void mouseReleased(MouseEvent e) {
                 if (interfaceEventDraw != null) {
                     interfaceEventDraw.cardTurn(); // Will handle image + spawning
+                    
+                    Point screenPoint = e.getLocationOnScreen();
+                    interfaceEventDraw.cardDropped(Cards.this, screenPoint);
                 }
             }
         });
@@ -106,4 +110,9 @@ public class Cards extends JPanel implements Serializable {
     public void addInterfaceEventDraw(InterfaceEventDraw ied) {
         this.interfaceEventDraw = ied;
     }
+
+    public void setIsDetached(boolean isDetached) {
+        this.isDetached = isDetached;
+    }
+    
 }
