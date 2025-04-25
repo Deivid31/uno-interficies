@@ -93,12 +93,23 @@ public class MainGUI extends javax.swing.JFrame {
                     if (!card.isDraw()) {
                         addNewCardToDeck(deckPanel);
                         card.setIsDraw(true);
+                        Human human = null;
+                        for (iPlayer player : game.getPlayers()) {
+                            if (player instanceof Human) {
+                                human = (Human) player;
+                                break;
+                            }
+                        }
+                        human.addCard(card);
                     }
                 }
             }
 
             @Override
             public void cardDropped(Card droppedCard, Point screenPoint) {
+                if(!droppedCard.isDraw()) {
+                    droppedCard.getInterfaceEventDraw().cardDrag();
+                }
                 Point panelPointUsDeck = new Point(screenPoint);
                 Point panelPointPlayDeck = new Point(screenPoint);
 

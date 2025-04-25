@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collections;
 import models.enums.Types;
 
 public class Human extends iPlayer {
@@ -31,6 +32,8 @@ public class Human extends iPlayer {
     }
 
     public void addCard(Card card) {
-        deck.add(card);
+        if(Collections.frequency(deck, card) < 2) {
+            deck.add(card);
+        }
     }
 }

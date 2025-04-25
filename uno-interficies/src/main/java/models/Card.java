@@ -105,6 +105,10 @@ public class Card extends JPanel implements Serializable {
         this.interfaceEventDraw = ied;
     }
 
+    public InterfaceEventDraw getInterfaceEventDraw() {
+        return interfaceEventDraw;
+    }
+
     public void setIsDetached(boolean isDetached) {
         this.isDetached = isDetached;
     }
