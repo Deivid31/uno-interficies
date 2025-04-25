@@ -59,7 +59,7 @@ public class MainGUI extends javax.swing.JFrame {
         placeHolder1.setIcon(imageIcon);
         placeHolder2.setIcon(imageIcon);
         placeHolder3.setIcon(imageIcon);
-        displayHumanDeck();
+        initialDeck();
     }
 
     private void addNewCardToDeck(JPanel deckPanel) {
@@ -168,10 +168,10 @@ public class MainGUI extends javax.swing.JFrame {
         });
     }
 
-    private void displayHumanDeck() {
-        // Clear existing cards if any
+    private void initialDeck() {
+        
         usDeck.removeAll();
-        // Get human player
+        
         Human human = null;
         for (iPlayer player : game.getPlayers()) {
             if (player instanceof Human) {
@@ -229,9 +229,7 @@ public class MainGUI extends javax.swing.JFrame {
 
                     if (gameDeck.contains(panelPointPlayDeck)) {
                         droppedCard.setIsDetached(false);
-                        gameDeck.add(droppedCard);
-                        gameDeck.revalidate();
-                        gameDeck.repaint();
+                        game.playHumanCard(droppedCard);
                     } else {
                         droppedCard.setIsDetached(false);
                         usDeck.add(droppedCard);
