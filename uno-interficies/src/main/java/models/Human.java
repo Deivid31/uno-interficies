@@ -29,5 +29,8 @@ public class Human extends iPlayer {
     public void setTurn(boolean turn) {
         this.turn = turn;
     }
-
+    
+    public void addCard(Card card) {
+        deck.add(card);
+    }
 }
