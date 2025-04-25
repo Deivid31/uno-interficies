@@ -228,8 +228,18 @@ public class MainGUI extends javax.swing.JFrame {
                     }
 
                     if (gameDeck.contains(panelPointPlayDeck)) {
-                        droppedCard.setIsDetached(false);
                         game.playHumanCard(droppedCard);
+                        if(game.getActualCard() == droppedCard) {
+                            droppedCard.setIsDetached(false);
+                            gameDeck.add(droppedCard);
+                            gameDeck.revalidate();
+                            gameDeck.repaint();
+                        } else {
+                            droppedCard.setIsDetached(false);
+                            usDeck.add(droppedCard);
+                            usDeck.revalidate();
+                            usDeck.repaint();
+                        }
                     } else {
                         droppedCard.setIsDetached(false);
                         usDeck.add(droppedCard);
