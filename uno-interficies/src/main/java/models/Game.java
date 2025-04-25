@@ -43,12 +43,15 @@ public class Game {
     public void setListener(GameListener listener) {
         this.listener = listener;
     }
-    
+
     public void startGame() {
+
         if (gameStarted) {
             Logger.error("Ya hay una partida empezada");
             return;
         }
+
+        Logger.gameStart(this);
 
         gameStarted = true;
         nextTurn();
@@ -172,7 +175,7 @@ public class Game {
     }
 
     private void advanceTurn() {
-        turn = (turn + direction + players.size()) % players.size();
+        turn = (turn * direction + players.size()) % players.size();
         nextTurn();
     }
 
@@ -213,11 +216,11 @@ public class Game {
             System.out.println("¡Gana el jugador " + players.get(turn).getName() + "!");
         }
     }
-    
+
     public List<iPlayer> getPlayers() {
         return players;
     }
-    
+
     public Card getActualCard() {
         return actualCard;
     }
