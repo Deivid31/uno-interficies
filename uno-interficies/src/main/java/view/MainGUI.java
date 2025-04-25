@@ -62,7 +62,6 @@ public class MainGUI extends javax.swing.JFrame {
         displayHumanDeck();
     }
 
-    // Funcion para el mazo (Estatico de momento)
     private void addNewCardToDeck(JPanel deckPanel) {
         Card card = game.draw();
         card.setBounds(0, 0, 50, 75); //Posicion de la carta en el mazo
@@ -127,6 +126,14 @@ public class MainGUI extends javax.swing.JFrame {
                     usDeck.add(droppedCard);
                     usDeck.revalidate();
                     usDeck.repaint();
+                    Human human = null;
+                    for (iPlayer player : game.getPlayers()) {
+                        if (player instanceof Human) {
+                            human = (Human) player;
+                            break;
+                        }
+                    }
+                    human.addCard(droppedCard);
                 }
             }
         });
@@ -164,7 +171,6 @@ public class MainGUI extends javax.swing.JFrame {
     private void displayHumanDeck() {
         // Clear existing cards if any
         usDeck.removeAll();
-
         // Get human player
         Human human = null;
         for (iPlayer player : game.getPlayers()) {
@@ -173,7 +179,6 @@ public class MainGUI extends javax.swing.JFrame {
                 break;
             }
         }
-
         // Añadir cartas iniciales
         for (Card card : human.getDeck()) {
             Card visualCard = card;
@@ -256,6 +261,7 @@ public class MainGUI extends javax.swing.JFrame {
         gameDeck.add(actualCard);
         gameDeck.revalidate();
         gameDeck.repaint();
+        actCardLabel.setText("La carta actual es: "+actualCard.toString());
     }
     /**
      * No borrar
@@ -270,6 +276,7 @@ public class MainGUI extends javax.swing.JFrame {
         placeHolder1 = new javax.swing.JLabel();
         placeHolder2 = new javax.swing.JLabel();
         placeHolder3 = new javax.swing.JLabel();
+        actCardLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(500, 500));
@@ -321,54 +328,67 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 77, Short.MAX_VALUE)
         );
 
+        placeHolder1.setForeground(new java.awt.Color(255, 255, 255));
         placeHolder1.setText("p1");
 
+        placeHolder2.setForeground(new java.awt.Color(255, 255, 255));
         placeHolder2.setText("p2");
 
+        placeHolder3.setForeground(new java.awt.Color(255, 255, 255));
         placeHolder3.setText("p3");
+
+        actCardLabel.setForeground(new java.awt.Color(255, 255, 255));
+        actCardLabel.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(placeHolder1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(placeHolder1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(151, 151, 151)
+                                .addComponent(actCardLabel))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32))))
+                    .addComponent(placeHolder2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(102, 102, 102)
                 .addComponent(placeHolder3)
                 .addGap(36, 36, 36))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(228, 228, 228)
-                .addComponent(placeHolder2)
-                .addContainerGap(247, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(86, 86, 86)
-                .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(placeHolder2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(placeHolder3)
-                    .addComponent(placeHolder1))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(95, 95, 95)
-                        .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(13, Short.MAX_VALUE))
+                        .addGap(53, 53, 53)
+                        .addComponent(actCardLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(placeHolder3)
+                                .addComponent(placeHolder1))
+                            .addComponent(gameDeck, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(75, 75, 75)
+                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -380,6 +400,7 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_usDeckComponentAdded
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel actCardLabel;
     private javax.swing.JPanel deck;
     private javax.swing.JPanel gameDeck;
     private javax.swing.JLabel placeHolder1;
