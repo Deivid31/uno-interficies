@@ -9,25 +9,28 @@ import java.io.Serializable;
 import javax.swing.*;
 
 import models.enums.Colors;
-import models.enums.Type;
+import models.enums.Types;
 
 public class Card extends JPanel implements Serializable {
     private final Colors color;
-    private final Type power;
+    private final Types type;
     private final int number;
 
     private String imagePath = "src\\main\\java\\img\\reverso\\carta_detras.png";
     private InterfaceEventDraw interfaceEventDraw;
     private Point clickOffset;
     private boolean isDetached = false;
+    private boolean isTurned = false;
+    private boolean isDraw = false;
+    private boolean isPlayed = false;
 
     public Card() {
-        this(0, Colors.RED, Type.NUM); // Default values
+        this(0, Colors.RED, Types.NUM);
     }
 
-    public Card(int number, Colors color, Type power) {
+    public Card(int number, Colors color, Types type) {
         this.color = color;
-        this.power = power;
+        this.type = type;
         this.number = number;
         setOpaque(true);
         setPreferredSize(new Dimension(40, 65));
@@ -35,16 +38,21 @@ public class Card extends JPanel implements Serializable {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                clickOffset = e.getPoint();
+                if (!isPlayed) {
+                    clickOffset = e.getPoint();
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (interfaceEventDraw != null) {
-                    interfaceEventDraw.cardTurn(); // Will handle image + spawning
-                    
-                    Point screenPoint = e.getLocationOnScreen();
-                    interfaceEventDraw.cardDropped(Card.this, screenPoint);
+                if (!isPlayed) {
+                    if (interfaceEventDraw != null) {
+                        if(!isTurned) {
+                            interfaceEventDraw.cardTurn();
+                        }
+                        Point screenPoint = e.getLocationOnScreen();
+                        interfaceEventDraw.cardDropped(Card.this, screenPoint);
+                    }
                 }
             }
         });
@@ -52,12 +60,15 @@ public class Card extends JPanel implements Serializable {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (interfaceEventDraw != null) {
-                    interfaceEventDraw.cardDrag();
+                if (!isPlayed) {
+                    if (interfaceEventDraw != null) {
+                        if(!isDetached) {
+                            interfaceEventDraw.cardDrag();
+                        }
+                    }
+                    // Para mover la carta
+                    setLocation(getX() + e.getX() - clickOffset.x, getY() + e.getY() - clickOffset.y);
                 }
-
-                // Para mover la carta
-                setLocation(getX() + e.getX() - clickOffset.x, getY() + e.getY() - clickOffset.y);
             }
         });
     }
@@ -82,8 +93,8 @@ public class Card extends JPanel implements Serializable {
         return color;
     }
 
-    public Type getPower() {
-        return power;
+    public Types getType() {
+        return type;
     }
 
     public int getNum() {
@@ -98,5 +109,30 @@ public class Card extends JPanel implements Serializable {
     }
     public boolean isDetached() {
         return isDetached;
+    }
+
+    public boolean isTurned() {
+        return isTurned;
+    }
+
+    public boolean isDraw() {
+        return isDraw;
+    }
+
+    public void setIsTurned(boolean isTurned) {
+        this.isTurned = isTurned;
+    }
+
+    public void setIsDraw(boolean isDraw) {
+        this.isDraw = isDraw;
+    }
+
+    public void setIsPlayed(boolean isPlayed) {
+        this.isPlayed = isPlayed;
+    }
+    
+    @Override
+    public String toString() {
+        return this.getColor().toString() + " " + this.getNum() + " (" + this.getType().toString() + ")";
     }
 }

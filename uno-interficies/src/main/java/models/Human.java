@@ -1,6 +1,6 @@
 package models;
 
-import models.enums.Type;
+import models.enums.Types;
 
 public class Human extends iPlayer {
 
@@ -18,8 +18,8 @@ public class Human extends iPlayer {
 
         return card.getColor().equals(card.getColor())
                 || card.getNum() == card.getNum()
-                || card.getPower() == Type.CHANGE_COLOR
-                || card.getPower() == Type.DRAW4;
+                || card.getType() == Types.CHANGE_COLOR
+                || card.getType() == Types.DRAW4;
     }
 
     public boolean isTurn() {

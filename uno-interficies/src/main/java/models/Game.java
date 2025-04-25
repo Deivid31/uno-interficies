@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import models.enums.Colors;
-import models.enums.Type;
-import static models.enums.Type.CHANGE_COLOR;
-import static models.enums.Type.DRAW2;
-import static models.enums.Type.DRAW4;
+import models.enums.Types;
+import static models.enums.Types.CHANGE_COLOR;
+import static models.enums.Types.DRAW2;
+import static models.enums.Types.DRAW4;
 import random.Logger;
 
 public class Game {
@@ -21,6 +21,7 @@ public class Game {
     private int turn;
     private Image img;
     private int direction;
+    private GameListener listener;
 
     public Game() {
         random = new Random();
@@ -39,6 +40,10 @@ public class Game {
         startCard();
     }
 
+    public void setListener(GameListener listener) {
+        this.listener = listener;
+    }
+    
     public void startGame() {
         if (gameStarted) {
             Logger.error("Ya hay una partida empezada");
@@ -58,12 +63,12 @@ public class Game {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i != 0) {
-                    Card card = new Card(i, Colors.values()[j], Type.NUM);
-                    Card card2 = new Card(i, Colors.values()[j], Type.NUM);
+                    Card card = new Card(i, Colors.values()[j], Types.NUM);
+                    Card card2 = new Card(i, Colors.values()[j], Types.NUM);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 } else {
-                    Card card = new Card(i, Colors.values()[j], Type.NUM);
+                    Card card = new Card(i, Colors.values()[j], Types.NUM);
                     drawDeck.add(card);
                 }
             }
@@ -72,15 +77,15 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             if (!Colors.values()[i].equals(Colors.BLACK)) {
                 for (int j = 0; j < 3; j++) {
-                    Card card = new Card(-j - 1, Colors.values()[i], Type.values()[j]);
-                    Card card2 = new Card(-j - 1, Colors.values()[i], Type.values()[j]);
+                    Card card = new Card(-j - 1, Colors.values()[i], Types.values()[j]);
+                    Card card2 = new Card(-j - 1, Colors.values()[i], Types.values()[j]);
                     drawDeck.add(card);
                     drawDeck.add(card2);
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
                     for (int k = 0; k < 4; k++) {
-                        Card card = new Card(-j - 4, Colors.values()[i], Type.values()[j + 3]);
+                        Card card = new Card(-j - 4, Colors.values()[i], Types.values()[j + 3]);
                         drawDeck.add(card);
                     }
                 }
@@ -103,10 +108,13 @@ public class Game {
     public void startCard() {
         Card card = drawDeck.get(random.nextInt(drawDeck.size()));
         actualCard = card;
+        if (listener != null) {
+            listener.onCardPlayed();
+        }
         drawDeck.remove(card);
     }
 
-    public List<Card> stratingCards() {
+    public List<Card> startingCards() {
         ArrayList<Card> result = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             Card card = drawDeck.get(random.nextInt(drawDeck.size()));
@@ -132,6 +140,9 @@ public class Game {
         Card card = current.playCard(actualCard);
         if (card != null) {
             actualCard = card;
+            if (listener != null) {
+                listener.onCardPlayed();
+            }
         }
 
         handleSpecialCard(actualCard);
@@ -148,6 +159,9 @@ public class Game {
         if (((Human) current).canPlay(card, actualCard)) {
             current.getDeck().remove(card);
             actualCard = card;
+            if (listener != null) {
+                listener.onCardPlayed();
+            }
             Logger.humanPlays((Human) current, card);
             handleSpecialCard(actualCard);
             checkEndGame();
@@ -164,9 +178,9 @@ public class Game {
 
     private void handleSpecialCard(Card card) {
         boolean skipAdvance = false;
-        switch (card.getPower()) {
+        switch (card.getType()) {
             case CHANGE_COLOR:
-                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Type.NUM);
+                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Types.NUM);
                 break;
             case SWAP:
                 direction *= -1;
@@ -183,7 +197,7 @@ public class Game {
             case DRAW4:
                 int draw4Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw4Target), 4);
-                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Type.NUM);
+                actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Types.NUM);
                 turn = (turn + 2 * direction + players.size()) % players.size();
                 skipAdvance = true;
                 break;
@@ -202,5 +216,9 @@ public class Game {
     
     public List<iPlayer> getPlayers() {
         return players;
+    }
+    
+    public Card getActualCard() {
+        return actualCard;
     }
 }

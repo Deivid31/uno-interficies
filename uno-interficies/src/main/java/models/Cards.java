@@ -8,12 +8,12 @@ import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
 import models.enums.Colors;
-import models.enums.Type;
+import models.enums.Types;
 
 public class Cards extends JPanel implements Serializable {
 
     private final Colors color;
-    private final Type power;
+    private final Types power;
     private final int number;
 
     private String imagePath = "src\\main\\java\\img\\reverso\\carta_detras.png";
@@ -22,10 +22,10 @@ public class Cards extends JPanel implements Serializable {
     private boolean isDetached = false;
 
     public Cards() {
-        this(Colors.RED, Type.NUM, 0); // Default values
+        this(Colors.RED, Types.NUM, 0); // Default values
     }
 
-    public Cards(Colors color, Type power, int number) {
+    public Cards(Colors color, Types power, int number) {
         this.color = color;
         this.power = power;
         this.number = number;
@@ -94,7 +94,7 @@ public class Cards extends JPanel implements Serializable {
         return color;
     }
 
-    public Type getPower() {
+    public Types getPower() {
         return power;
     }
 

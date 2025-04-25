@@ -14,7 +14,7 @@ public class iPlayer {
         deck = new ArrayList<Card>();
         this.game = game;
 
-        deck = game.stratingCards();
+        deck = game.startingCards();
     }
 
     public Card playCard(Card actual) {

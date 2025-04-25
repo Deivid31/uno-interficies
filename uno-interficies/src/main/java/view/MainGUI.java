@@ -22,9 +22,11 @@ import javax.swing.SwingUtilities;
 import models.Card;
 import models.Cards;
 import models.Game;
+import models.GameListener;
 import models.Human;
 import models.InterfaceEventDraw;
 import models.enums.Colors;
+import models.enums.Types;
 import models.iPlayer;
 
 public class MainGUI extends javax.swing.JFrame {
@@ -37,12 +39,19 @@ public class MainGUI extends javax.swing.JFrame {
         crearFondo();
         initComponents();
 
-        addNewCardToDeck(deck);
         game = new Game();
+        game.setListener(new GameListener() {
+            @Override
+            public void onCardPlayed() {
+                updateCardOnGameDeck();
+            }
+        });
+        game.startGame();
+        addNewCardToDeck(deck);
+        
         usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         usDeck.setPreferredSize(new Dimension(200, 100));
         usDeck.setBackground(java.awt.Color.gray);
-        gameDeck.setBackground(java.awt.Color.black);
         ImageIcon imageIcon = new ImageIcon("src\\main\\java\\img\\reverso\\carta_detras.png"); // load the image to a imageIcon
         Image image = imageIcon.getImage();
         Image newimg = image.getScaledInstance(50, 75,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
@@ -50,20 +59,24 @@ public class MainGUI extends javax.swing.JFrame {
         placeHolder1.setIcon(imageIcon);
         placeHolder2.setIcon(imageIcon);
         placeHolder3.setIcon(imageIcon);
-        game.startGame();
         displayHumanDeck();
     }
 
     // Funcion para el mazo (Estatico de momento)
     private void addNewCardToDeck(JPanel deckPanel) {
-        Card card = new Card(0, Colors.RED, models.enums.Type.NUM); // Datos por defecto
+        Card card = game.draw();
         card.setBounds(0, 0, 50, 75); //Posicion de la carta en el mazo
 
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                card.setImagePath("src\\main\\java\\img\\rojo\\5_rojo.png");
+                if(card.getType() == Types.NUM) {
+                    card.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png");
+                } else {
+                    card.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getType()+".png");
+                }
                 card.repaint();
+                card.setIsTurned(true);
             }
 
             @Override
@@ -73,40 +86,43 @@ public class MainGUI extends javax.swing.JFrame {
                     return;
                 }
                 JFrame frame = (JFrame) topLevel;
-
-                if (!card.isDetached()) {
-                    Container parent = card.getParent();
-                    if (parent != null) {
-                        parent.remove(card);
-                        frame.getContentPane().add(card);
-                        frame.getContentPane().setComponentZOrder(card, 0); // Bring to front
-                        Point globalPos = SwingUtilities.convertPoint(parent, card.getLocation(), frame.getContentPane());
-                        card.setLocation(globalPos);
-                        card.setSize(50, 75); // or card.getPreferredSize()
-                        card.setIsDetached(true);
-                        parent.repaint();
-                    }
-
+                Container parent = card.getParent();
+                if (parent != null) {
+                    parent.remove(card);
+                    frame.getContentPane().add(card);
+                    frame.getContentPane().setComponentZOrder(card, 0); // Bring to front
+                    Point globalPos = SwingUtilities.convertPoint(parent, card.getLocation(), frame.getContentPane());
+                    card.setLocation(globalPos);
+                    card.getPreferredSize();
+                    card.setIsDetached(true);
+                    parent.repaint();
                     // Replace card in deck
-                    addNewCardToDeck(deckPanel);
+                    if(!card.isDraw()) {
+                        addNewCardToDeck(deckPanel);
+                        card.setIsDraw(true);
+                    }
                 }
             }
 
             @Override
             public void cardDropped(Card droppedCard, Point screenPoint) {
-                // Make a copy of the screen point
-                Point panelPoint = new Point(screenPoint);
+                Point panelPointUsDeck = new Point(screenPoint);
+                Point panelPointPlayDeck = new Point(screenPoint);
 
-                SwingUtilities.convertPointFromScreen(panelPoint, usDeck);
+                // Convert screen point to local coordinates for each panel
+                SwingUtilities.convertPointFromScreen(panelPointUsDeck, usDeck);
+                SwingUtilities.convertPointFromScreen(panelPointPlayDeck, gameDeck); // <-- Your playing JPanel
 
-                // Now you can check if the point lies within usDeck
-                if (usDeck.contains(panelPoint)) {
-                    Container parent = droppedCard.getParent();
-                    if (parent != null) {
-                        parent.remove(droppedCard);
-                        parent.repaint();
-                    }
+                Container parent = droppedCard.getParent();
+                if (parent != null) {
+                    parent.remove(droppedCard);
+                    parent.repaint();
+                }
 
+                if (gameDeck.contains(panelPointPlayDeck)) {
+                    droppedCard.setIsDetached(false);
+                    game.playHumanCard(droppedCard);
+                } else {
                     droppedCard.setIsDetached(false);
                     usDeck.add(droppedCard);
                     usDeck.revalidate();
@@ -158,20 +174,88 @@ public class MainGUI extends javax.swing.JFrame {
             }
         }
 
-        if (human == null) {
-            System.err.println("No human player found!");
-            return;
-        }
-
-        // Add each card to the GUI
+        // Añadir cartas iniciales
         for (Card card : human.getDeck()) {
-            Card visualCard = card;  // your custom component
-            visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png"); // if needed
-            visualCard.setPreferredSize(new Dimension(50, 75));
+            Card visualCard = card;
+            if(card.getType() == Types.NUM) {
+                visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png");
+            } else {
+                visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getType()+".png");
+            }
+            visualCard.addInterfaceEventDraw(new InterfaceEventDraw() {
+                @Override
+                public void cardTurn() {
+                }
+
+                @Override
+                public void cardDrag() {
+                    Container topLevel = card.getTopLevelAncestor();
+                    if (!(topLevel instanceof JFrame)) {
+                        return;
+                    }
+                    JFrame frame = (JFrame) topLevel;
+                    Container parent = card.getParent();
+                    if (parent != null) {
+                        parent.remove(card);
+                        frame.getContentPane().add(card);
+                        frame.getContentPane().setComponentZOrder(card, 0); // Bring to front
+                        Point globalPos = SwingUtilities.convertPoint(parent, card.getLocation(), frame.getContentPane());
+                        card.setLocation(globalPos);
+                        card.getPreferredSize();
+                        card.setIsDetached(true);
+                        parent.repaint();
+                    }
+                }
+
+                @Override
+                public void cardDropped(Card droppedCard, Point screenPoint) {
+                    Point panelPointUsDeck = new Point(screenPoint);
+                    Point panelPointPlayDeck = new Point(screenPoint);
+
+                    // Convert screen point to local coordinates for each panel
+                    SwingUtilities.convertPointFromScreen(panelPointUsDeck, usDeck);
+                    SwingUtilities.convertPointFromScreen(panelPointPlayDeck, gameDeck); // <-- Your playing JPanel
+
+                    Container parent = droppedCard.getParent();
+                    if (parent != null) {
+                        parent.remove(droppedCard);
+                        parent.repaint();
+                    }
+
+                    if (gameDeck.contains(panelPointPlayDeck)) {
+                        droppedCard.setIsDetached(false);
+                        gameDeck.add(droppedCard);
+                        gameDeck.revalidate();
+                        gameDeck.repaint();
+                    } else {
+                        droppedCard.setIsDetached(false);
+                        usDeck.add(droppedCard);
+                        usDeck.revalidate();
+                        usDeck.repaint();
+                    }
+                }
+            });
             usDeck.add(visualCard);
         }
         usDeck.revalidate();
         usDeck.repaint();
+    }
+    
+    private void updateCardOnGameDeck() {
+        gameDeck.removeAll();
+        Card actualCard = game.getActualCard();
+        actualCard.setBounds(0, 0, 50, 75);
+
+        // Load correct image
+        if (actualCard.getType() == Types.NUM) {
+            actualCard.setImagePath("src\\main\\java\\img\\" + actualCard.getColor() + "\\" + actualCard.getNum() + ".png");
+        } else {
+            actualCard.setImagePath("src\\main\\java\\img\\" + actualCard.getColor() + "\\" + actualCard.getType() + ".png");
+        }
+        actualCard.setIsPlayed(true);
+        gameDeck.add(actualCard);
+        gameDeck.revalidate();
+        gameDeck.repaint();
     }
     /**
      * No borrar
@@ -255,33 +339,36 @@ public class MainGUI extends javax.swing.JFrame {
                 .addComponent(placeHolder3)
                 .addGap(36, 36, 36))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(223, 223, 223)
-                        .addComponent(placeHolder2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(148, Short.MAX_VALUE)
-                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(97, 97, 97)
-                        .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addGap(228, 228, 228)
+                .addComponent(placeHolder2)
+                .addContainerGap(247, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(86, 86, 86)
+                .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addComponent(placeHolder2)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(placeHolder3)
                     .addComponent(placeHolder1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95)
+                        .addComponent(usDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(13, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();

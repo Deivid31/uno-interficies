@@ -1,6 +1,6 @@
 package models.enums;
 
-public enum Type {
+public enum Types {
     BLOCK,
     SWAP,
     DRAW2,
