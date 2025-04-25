@@ -113,8 +113,18 @@ public class MainGUI extends javax.swing.JFrame {
                 }
 
                 if (gameDeck.contains(panelPointPlayDeck)) {
-                    droppedCard.setIsDetached(false);
                     game.playHumanCard(droppedCard);
+                    if(game.getActualCard() == droppedCard) {
+                        droppedCard.setIsDetached(false);
+                        gameDeck.add(droppedCard);
+                        gameDeck.revalidate();
+                        gameDeck.repaint();
+                    } else {
+                        droppedCard.setIsDetached(false);
+                        usDeck.add(droppedCard);
+                        usDeck.revalidate();
+                        usDeck.repaint();
+                    }
                 } else {
                     droppedCard.setIsDetached(false);
                     usDeck.add(droppedCard);
@@ -217,7 +227,7 @@ public class MainGUI extends javax.swing.JFrame {
 
                     if (gameDeck.contains(panelPointPlayDeck)) {
                         game.playHumanCard(droppedCard);
-                        if(game.getActualCard() == droppedCard) {
+                        if(game.getActualCard() == droppedCard) { // Los hilos se reanudan antes 
                             droppedCard.setIsDetached(false);
                             gameDeck.add(droppedCard);
                             gameDeck.revalidate();
@@ -325,10 +335,13 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 77, Short.MAX_VALUE)
         );
 
+        playerLabel1.setForeground(new java.awt.Color(255, 255, 255));
         playerLabel1.setText("p1");
 
+        playerLabel2.setForeground(new java.awt.Color(255, 255, 255));
         playerLabel2.setText("p2");
 
+        playerLabel3.setForeground(new java.awt.Color(255, 255, 255));
         playerLabel3.setText("p3");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
