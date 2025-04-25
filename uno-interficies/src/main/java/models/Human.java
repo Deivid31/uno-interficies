@@ -16,8 +16,8 @@ public class Human extends iPlayer {
             return false;
         }
 
-        return card.getColor().equals(card.getColor())
-                || card.getNum() == card.getNum()
+        return actualCard.getColor().equals(card.getColor())
+                || actualCard.getNum() == card.getNum()
                 || card.getType() == Types.CHANGE_COLOR
                 || card.getType() == Types.DRAW4;
     }
@@ -29,7 +29,7 @@ public class Human extends iPlayer {
     public void setTurn(boolean turn) {
         this.turn = turn;
     }
-    
+
     public void addCard(Card card) {
         deck.add(card);
     }
