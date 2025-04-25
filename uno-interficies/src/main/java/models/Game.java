@@ -194,7 +194,7 @@ public class Game {
     }
 
     private void advanceTurn() {
-        turn = (turn * direction + players.size()) % players.size();
+        turn = (turn + direction + players.size()) % players.size();
         nextTurn();
     }
 
@@ -213,19 +213,15 @@ public class Game {
             case DRAW2:
                 int draw2Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw2Target), 2);
-                turn = (turn + 2 * direction + players.size()) % players.size();
-                skipAdvance = true;
+                turn = (turn + direction + players.size()) % players.size();
                 break;
             case DRAW4:
                 int draw4Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw4Target), 4);
                 actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Types.NUM);
-                turn = (turn + 2 * direction + players.size()) % players.size();
+                turn = (turn + direction + players.size()) % players.size();
                 skipAdvance = true;
                 break;
-        }
-        if (!skipAdvance) {
-            turn = (turn + direction + players.size()) % players.size();
         }
     }
 
