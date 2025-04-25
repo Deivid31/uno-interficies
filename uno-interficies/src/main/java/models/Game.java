@@ -147,17 +147,29 @@ public class Game {
             return;
         }
 
-        Card card = current.playCard(actualCard);
-        if (card != null) {
-            actualCard = card;
-            if (listener != null) {
-                listener.onCardPlayed();
+        // Ejecutar turno del NPC sin bloquear el hilo de la GUI para que se vean las
+        // cartas que van tirando
+        new javax.swing.SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                Card card = current.playCard(actualCard);
+                if (card != null) {
+                    actualCard = card;
+                }
+                return null;
             }
-        }
 
-        handleSpecialCard(actualCard);
-        checkEndGame();
-        advanceTurn();
+            @Override
+            protected void done() {
+                if (listener != null) {
+                    listener.onCardPlayed();
+                }
+
+                handleSpecialCard(actualCard);
+                checkEndGame();
+                advanceTurn();
+            }
+        }.execute();
     }
 
     public void playHumanCard(Card card) {
@@ -182,7 +194,7 @@ public class Game {
     }
 
     private void advanceTurn() {
-        turn = (turn * direction + players.size()) % players.size();
+        turn = (turn + direction + players.size()) % players.size();
         nextTurn();
     }
 
@@ -201,19 +213,15 @@ public class Game {
             case DRAW2:
                 int draw2Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw2Target), 2);
-                turn = (turn + 2 * direction + players.size()) % players.size();
-                skipAdvance = true;
+                turn = (turn + direction + players.size()) % players.size();
                 break;
             case DRAW4:
                 int draw4Target = (turn + direction + players.size()) % players.size();
                 playerDraws(players.get(draw4Target), 4);
                 actualCard = new Card(-6, Colors.values()[random.nextInt(4)], Types.NUM);
-                turn = (turn + 2 * direction + players.size()) % players.size();
+                turn = (turn + direction + players.size()) % players.size();
                 skipAdvance = true;
                 break;
-        }
-        if (!skipAdvance) {
-            turn = (turn + direction + players.size()) % players.size();
         }
     }
 
