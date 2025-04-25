@@ -217,7 +217,7 @@ public class MainGUI extends javax.swing.JFrame {
 
                     if (gameDeck.contains(panelPointPlayDeck)) {
                         game.playHumanCard(droppedCard);
-                        if(game.getActualCard() == droppedCard) {
+                        if (game.getActualCard() == droppedCard) {
                             droppedCard.setIsDetached(false);
                             gameDeck.add(droppedCard);
                             gameDeck.revalidate();
@@ -242,7 +242,7 @@ public class MainGUI extends javax.swing.JFrame {
         usDeck.repaint();
     }
 
-    private void updateCardOnGameDeck() {
+    public void updateCardOnGameDeck() {
         gameDeck.removeAll();
         Card actualCard = game.getActualCard();
         actualCard.setBounds(0, 0, 50, 75);
@@ -343,12 +343,10 @@ public class MainGUI extends javax.swing.JFrame {
                 .addComponent(playerLabel3)
                 .addGap(36, 36, 36))
             .addGroup(layout.createSequentialGroup()
+                .addGap(210, 210, 210)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(playerLabel2)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(228, 228, 228)
-                        .addComponent(playerLabel2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(210, 210, 210)
                         .addComponent(gameDeck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(82, 82, 82)
                         .addComponent(deck, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -357,9 +355,9 @@ public class MainGUI extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(playerLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(playerLabel3)
                     .addComponent(playerLabel1))

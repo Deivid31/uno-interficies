@@ -147,17 +147,29 @@ public class Game {
             return;
         }
 
-        Card card = current.playCard(actualCard);
-        if (card != null) {
-            actualCard = card;
-            if (listener != null) {
-                listener.onCardPlayed();
+        // Ejecutar turno del NPC sin bloquear el hilo de la GUI para que se vean las
+        // cartas que van tirando
+        new javax.swing.SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                Card card = current.playCard(actualCard);
+                if (card != null) {
+                    actualCard = card;
+                }
+                return null;
             }
-        }
 
-        handleSpecialCard(actualCard);
-        checkEndGame();
-        advanceTurn();
+            @Override
+            protected void done() {
+                if (listener != null) {
+                    listener.onCardPlayed();
+                }
+
+                handleSpecialCard(actualCard);
+                checkEndGame();
+                advanceTurn();
+            }
+        }.execute();
     }
 
     public void playHumanCard(Card card) {
