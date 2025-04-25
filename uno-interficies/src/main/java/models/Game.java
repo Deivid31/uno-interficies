@@ -10,10 +10,12 @@ import static models.enums.Types.CHANGE_COLOR;
 import static models.enums.Types.DRAW2;
 import static models.enums.Types.DRAW4;
 import random.Logger;
+import view.MainGUI;
 
 public class Game {
 
     private Random random;
+    private MainGUI gui;
     private boolean gameStarted;
     private ArrayList<Card> drawDeck;
     private ArrayList<iPlayer> players;
@@ -23,7 +25,9 @@ public class Game {
     private int direction;
     private GameListener listener;
 
-    public Game() {
+    public Game(MainGUI gui) {
+        this.gui = gui;
+
         random = new Random();
         drawDeck = new ArrayList<>();
         players = new ArrayList<>();
@@ -51,9 +55,12 @@ public class Game {
             return;
         }
 
-        Logger.gameStart(this);
+        gui.playerLabel1.setText(players.get(0).getName());
+        gui.playerLabel2.setText(players.get(1).getName());
+        gui.playerLabel3.setText(players.get(2).getName());
 
         gameStarted = true;
+        Logger.gameStart(this);
         nextTurn();
     }
 

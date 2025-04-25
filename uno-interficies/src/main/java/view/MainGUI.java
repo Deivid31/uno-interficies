@@ -8,24 +8,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.Point2D;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import models.Card;
-import models.Cards;
 import models.Game;
 import models.GameListener;
 import models.Human;
 import models.InterfaceEventDraw;
-import models.enums.Colors;
 import models.enums.Types;
 import models.iPlayer;
 
@@ -39,7 +32,7 @@ public class MainGUI extends javax.swing.JFrame {
         crearFondo();
         initComponents();
 
-        game = new Game();
+        game = new Game(this);
         game.setListener(new GameListener() {
             @Override
             public void onCardPlayed() {
@@ -48,17 +41,17 @@ public class MainGUI extends javax.swing.JFrame {
         });
         game.startGame();
         addNewCardToDeck(deck);
-        
+
         usDeck.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         usDeck.setPreferredSize(new Dimension(200, 100));
         usDeck.setBackground(java.awt.Color.gray);
         ImageIcon imageIcon = new ImageIcon("src\\main\\java\\img\\reverso\\carta_detras.png"); // load the image to a imageIcon
         Image image = imageIcon.getImage();
-        Image newimg = image.getScaledInstance(50, 75,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+        Image newimg = image.getScaledInstance(50, 75, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
         imageIcon = new ImageIcon(newimg);
-        placeHolder1.setIcon(imageIcon);
-        placeHolder2.setIcon(imageIcon);
-        placeHolder3.setIcon(imageIcon);
+        playerLabel1.setIcon(imageIcon);
+        playerLabel2.setIcon(imageIcon);
+        playerLabel3.setIcon(imageIcon);
         displayHumanDeck();
     }
 
@@ -70,10 +63,10 @@ public class MainGUI extends javax.swing.JFrame {
         card.addInterfaceEventDraw(new InterfaceEventDraw() {
             @Override
             public void cardTurn() {
-                if(card.getType() == Types.NUM) {
-                    card.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png");
+                if (card.getType() == Types.NUM) {
+                    card.setImagePath("src\\main\\java\\img\\" + card.getColor() + "\\" + card.getNum() + ".png");
                 } else {
-                    card.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getType()+".png");
+                    card.setImagePath("src\\main\\java\\img\\" + card.getColor() + "\\" + card.getType() + ".png");
                 }
                 card.repaint();
                 card.setIsTurned(true);
@@ -97,7 +90,7 @@ public class MainGUI extends javax.swing.JFrame {
                     card.setIsDetached(true);
                     parent.repaint();
                     // Replace card in deck
-                    if(!card.isDraw()) {
+                    if (!card.isDraw()) {
                         addNewCardToDeck(deckPanel);
                         card.setIsDraw(true);
                     }
@@ -177,10 +170,10 @@ public class MainGUI extends javax.swing.JFrame {
         // Añadir cartas iniciales
         for (Card card : human.getDeck()) {
             Card visualCard = card;
-            if(card.getType() == Types.NUM) {
-                visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getNum()+".png");
+            if (card.getType() == Types.NUM) {
+                visualCard.setImagePath("src\\main\\java\\img\\" + card.getColor() + "\\" + card.getNum() + ".png");
             } else {
-                visualCard.setImagePath("src\\main\\java\\img\\"+card.getColor()+"\\"+card.getType()+".png");
+                visualCard.setImagePath("src\\main\\java\\img\\" + card.getColor() + "\\" + card.getType() + ".png");
             }
             visualCard.addInterfaceEventDraw(new InterfaceEventDraw() {
                 @Override
@@ -240,7 +233,7 @@ public class MainGUI extends javax.swing.JFrame {
         usDeck.revalidate();
         usDeck.repaint();
     }
-    
+
     private void updateCardOnGameDeck() {
         gameDeck.removeAll();
         Card actualCard = game.getActualCard();
@@ -257,6 +250,7 @@ public class MainGUI extends javax.swing.JFrame {
         gameDeck.revalidate();
         gameDeck.repaint();
     }
+
     /**
      * No borrar
      */
@@ -267,9 +261,9 @@ public class MainGUI extends javax.swing.JFrame {
         usDeck = new javax.swing.JPanel();
         deck = new javax.swing.JPanel();
         gameDeck = new javax.swing.JPanel();
-        placeHolder1 = new javax.swing.JLabel();
-        placeHolder2 = new javax.swing.JLabel();
-        placeHolder3 = new javax.swing.JLabel();
+        playerLabel1 = new javax.swing.JLabel();
+        playerLabel2 = new javax.swing.JLabel();
+        playerLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(500, 500));
@@ -294,6 +288,7 @@ public class MainGUI extends javax.swing.JFrame {
         );
 
         deck.setMinimumSize(new java.awt.Dimension(50, 75));
+        deck.setOpaque(false);
         deck.setPreferredSize(new java.awt.Dimension(50, 75));
 
         javax.swing.GroupLayout deckLayout = new javax.swing.GroupLayout(deck);
@@ -308,6 +303,7 @@ public class MainGUI extends javax.swing.JFrame {
         );
 
         gameDeck.setMinimumSize(new java.awt.Dimension(50, 75));
+        gameDeck.setOpaque(false);
         gameDeck.setPreferredSize(new java.awt.Dimension(52, 77));
 
         javax.swing.GroupLayout gameDeckLayout = new javax.swing.GroupLayout(gameDeck);
@@ -321,11 +317,11 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 77, Short.MAX_VALUE)
         );
 
-        placeHolder1.setText("p1");
+        playerLabel1.setText("p1");
 
-        placeHolder2.setText("p2");
+        playerLabel2.setText("p2");
 
-        placeHolder3.setText("p3");
+        playerLabel3.setText("p3");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -334,13 +330,13 @@ public class MainGUI extends javax.swing.JFrame {
             .addComponent(usDeck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(placeHolder1)
+                .addComponent(playerLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(placeHolder3)
+                .addComponent(playerLabel3)
                 .addGap(36, 36, 36))
             .addGroup(layout.createSequentialGroup()
                 .addGap(228, 228, 228)
-                .addComponent(placeHolder2)
+                .addComponent(playerLabel2)
                 .addContainerGap(247, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -353,11 +349,11 @@ public class MainGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(placeHolder2)
+                .addComponent(playerLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(placeHolder3)
-                    .addComponent(placeHolder1))
+                    .addComponent(playerLabel3)
+                    .addComponent(playerLabel1))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
@@ -382,9 +378,9 @@ public class MainGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel deck;
     private javax.swing.JPanel gameDeck;
-    private javax.swing.JLabel placeHolder1;
-    private javax.swing.JLabel placeHolder2;
-    private javax.swing.JLabel placeHolder3;
+    public javax.swing.JLabel playerLabel1;
+    public javax.swing.JLabel playerLabel2;
+    public javax.swing.JLabel playerLabel3;
     private javax.swing.JPanel usDeck;
     // End of variables declaration//GEN-END:variables
 }

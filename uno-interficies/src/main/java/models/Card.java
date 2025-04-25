@@ -7,11 +7,11 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
-
 import models.enums.Colors;
 import models.enums.Types;
 
 public class Card extends JPanel implements Serializable {
+
     private final Colors color;
     private final Types type;
     private final int number;
@@ -32,9 +32,9 @@ public class Card extends JPanel implements Serializable {
         this.color = color;
         this.type = type;
         this.number = number;
-        setOpaque(true);
+        setOpaque(false);
         setPreferredSize(new Dimension(40, 65));
-        
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -47,7 +47,7 @@ public class Card extends JPanel implements Serializable {
             public void mouseReleased(MouseEvent e) {
                 if (!isPlayed) {
                     if (interfaceEventDraw != null) {
-                        if(!isTurned) {
+                        if (!isTurned) {
                             interfaceEventDraw.cardTurn();
                         }
                         Point screenPoint = e.getLocationOnScreen();
@@ -62,7 +62,7 @@ public class Card extends JPanel implements Serializable {
             public void mouseDragged(MouseEvent e) {
                 if (!isPlayed) {
                     if (interfaceEventDraw != null) {
-                        if(!isDetached) {
+                        if (!isDetached) {
                             interfaceEventDraw.cardDrag();
                         }
                     }
@@ -100,6 +100,7 @@ public class Card extends JPanel implements Serializable {
     public int getNum() {
         return number;
     }
+
     public void addInterfaceEventDraw(InterfaceEventDraw ied) {
         this.interfaceEventDraw = ied;
     }
@@ -107,6 +108,7 @@ public class Card extends JPanel implements Serializable {
     public void setIsDetached(boolean isDetached) {
         this.isDetached = isDetached;
     }
+
     public boolean isDetached() {
         return isDetached;
     }
@@ -130,7 +132,7 @@ public class Card extends JPanel implements Serializable {
     public void setIsPlayed(boolean isPlayed) {
         this.isPlayed = isPlayed;
     }
-    
+
     @Override
     public String toString() {
         return this.getColor().toString() + " " + this.getNum() + " (" + this.getType().toString() + ")";
