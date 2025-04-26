@@ -28,7 +28,6 @@ public class Npc extends iPlayer {
         Card drawCard = game.draw();
         if (drawCard.getColor().equals(actual.getColor()) || drawCard.getColor().equals(Colors.BLACK) || drawCard.getNum() == actual.getNum()) {
             waitTime(1000);
-            deck.remove(drawCard);
             Logger.npcPlays(this, drawCard);
             return drawCard;
         }

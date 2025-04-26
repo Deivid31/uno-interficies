@@ -12,17 +12,16 @@ import models.enums.Types;
 
 public class Card extends JPanel implements Serializable {
 
-    private final Colors color;
+    private Colors color;
     private final Types type;
     private final int number;
 
     private String imagePath = "src\\main\\java\\img\\reverso\\carta_detras.png";
     private InterfaceEventDraw interfaceEventDraw;
-    private Point clickOffset;
-    private boolean isDetached = false;
-    private boolean isTurned = false;
-    private boolean isDraw = false;
-    private boolean isPlayed = false;
+    private Point pointPressed;
+    private boolean isTurned = false; // Booleana para comprobar si la carta esta dada la vuelta
+    private boolean isDraw = false; // Boleana para comprobar si la carta se ha sacado del mazo de robo o no
+    private boolean isPlayed = false; // Booleana para checkear si es una carta jugada o no (Para no interactuar con las del mazo de juego)
 
     public Card() {
         this(0, Colors.RED, Types.NUM);
@@ -35,39 +34,45 @@ public class Card extends JPanel implements Serializable {
         setOpaque(false);
         setPreferredSize(new Dimension(40, 65));
 
+        // Listener para las acciones del raton
         addMouseListener(new MouseAdapter() {
+            // Override del evento al clicar con el raton
             @Override
             public void mousePressed(MouseEvent e) {
                 if (!isPlayed) {
-                    clickOffset = e.getPoint();
+                    pointPressed = e.getPoint(); // Para la posicion relativa en el componente al clicar en el
                 }
             }
 
+            // Override del evento al dejar de presionar el raton
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (!isPlayed) {
                     if (interfaceEventDraw != null) {
                         if (!isTurned) {
+                            // Si no esta dada la vuelta llama al metodo
                             interfaceEventDraw.cardTurn();
                         }
-                        Point screenPoint = e.getLocationOnScreen();
+                        Point screenPoint = e.getLocationOnScreen(); // Pasa la posición absoluta de donde esta el raton
+                        // Llama al metodo pasandose a si mismo y la localización del raton
                         interfaceEventDraw.cardDropped(Card.this, screenPoint);
                     }
                 }
             }
         });
 
+        // Listener que comprueba cuando el raton esta en movimiento
         addMouseMotionListener(new MouseMotionAdapter() {
+            // Override del evento al arrastrar el raton (Moverlo mientras esta presionado)
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (!isPlayed) {
                     if (interfaceEventDraw != null) {
-                        if (!isDetached) {
-                            interfaceEventDraw.cardDrag();
-                        }
+                        // Llama al metodo cada que se arrastra el raton
+                        interfaceEventDraw.cardDrag();
                     }
-                    // Para mover la carta
-                    setLocation(getX() + e.getX() - clickOffset.x, getY() + e.getY() - clickOffset.y);
+                    // Para mover/cambiar de ubicacion la carta
+                    setLocation(getX() + e.getX() - pointPressed.x, getY() + e.getY() - pointPressed.y);
                 }
             }
         });
@@ -93,6 +98,10 @@ public class Card extends JPanel implements Serializable {
         return color;
     }
 
+    public void setColor(Colors color) {
+        this.color = color;
+    }
+    
     public Types getType() {
         return type;
     }
@@ -107,14 +116,6 @@ public class Card extends JPanel implements Serializable {
 
     public InterfaceEventDraw getInterfaceEventDraw() {
         return interfaceEventDraw;
-    }
-
-    public void setIsDetached(boolean isDetached) {
-        this.isDetached = isDetached;
-    }
-
-    public boolean isDetached() {
-        return isDetached;
     }
 
     public boolean isTurned() {
@@ -140,5 +141,18 @@ public class Card extends JPanel implements Serializable {
     @Override
     public String toString() {
         return this.getColor().toString() + " " + this.getNum() + " (" + this.getType().toString() + ")";
+    }
+    
+    public String actColor() {
+        switch (color) {
+            case BLUE:
+                return "Color actual: Azul";
+            case RED:
+                return "Color actual: Rojo";
+            case GREEN:
+                return "Color actual: Verde";
+            default:
+                return "Color actual: Amarillo";
+        }
     }
 }
