@@ -39,7 +39,7 @@ public class Game {
         gameStarted = false;
         turn = 0;
         direction = 1;
-        fillDeck();
+        fillDeck(null);
 
         players.add(new Npc(this));
         players.add(new Npc(this));
@@ -95,7 +95,7 @@ public class Game {
         firstCard();
     }
 
-    public void fillDeck() {
+    public void fillDeck(Card drawed) {
         if (!drawDeck.isEmpty()) {
             Logger.warn("Se ha rellenado el mazo sin estar vacío");
         }
@@ -110,9 +110,15 @@ public class Game {
                         enUso++;
                     }
                 }
+                if (drawed != null) {
+                    if (card.toString().equals(drawed.toString())) {
+                        enUso++;
+                    }
+                }
                 for (iPlayer player : players) {
                     enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
                 }
+                if(enUso > 2) enUso = 2;
                 if (i != 0) {
                     int copias = 2 - enUso;
                     for (int k = 0; k < copias; k++) {
@@ -136,29 +142,41 @@ public class Game {
                             enUso++;
                         }
                     }
+                    if (drawed != null) {
+                        if (card.toString().equals(drawed.toString())) {
+                            enUso++;
+                        }
+                    }
                     for (iPlayer player : players) {
                         enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
                     }
+                    if(enUso > 2) enUso = 2;
                     int copias = 2 - enUso;
                     for (int k = 0; k < copias; k++) {
-                        drawDeck.add(new Card(i, Colors.values()[j], Types.NUM));
+                        drawDeck.add(new Card(-j - 1, Colors.values()[i], Types.values()[j]));
                     }
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
+                    int enUso = 0;
                     for (int k = 0; k < 4; k++) {
-                        int enUso = 0;
                         Card card = new Card(-j - 4, Colors.values()[i], Types.values()[j + 3]);
                         if (actualCard != null) {
-                        if (card.toString().equals(actualCard.toString())) {
+                            if (card.toString().equals(actualCard.toString())) {
+                                enUso++;
+                            }
+                        }
+                        if (drawed != null) {
+                            if (card.toString().equals(drawed.toString())) {
                                 enUso++;
                             }
                         }
                         for (iPlayer player : players) {
                             enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
                         }
-                        if (enUso == 0) {
+                        if (enUso < 4) {
                             drawDeck.add(card);
+                            enUso++;
                         }
                     }
                 }
@@ -173,7 +191,7 @@ public class Game {
         gui.drawDeckLabel.setText("Mazo: " + drawDeck.size());
         drawDeck.remove(drawed);
         if (drawDeck.isEmpty()) {
-            fillDeck();
+            fillDeck(drawed);
         }
         return drawed;
     }
