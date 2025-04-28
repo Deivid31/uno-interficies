@@ -51,24 +51,25 @@ public class Game {
 
     private void showOrder() {
         int turnH;
-        for (int i = 0; i < 4; i++){
-            if (players.get(i).getName().equals("Human")){
+        for (int i = 0; i < 4; i++) {
+            if (players.get(i).getName().equals("Human")) {
                 turnH = i;
-                for (int j = 1; j<4;j++){
-                    if (turnH + 1 > 3)
+                for (int j = 1; j < 4; j++) {
+                    if (turnH + 1 > 3) {
                         turnH = 0;
-                    if (turnH + j >= 4){
-                        pos.add(turnH+j -4);
-                        npcs.add(players.get(turnH+j -4));
-                    }else{
-                        pos.add(turnH+j);
-                        npcs.add(players.get(turnH+j));
                     }
-                
+                    if (turnH + j >= 4) {
+                        pos.add(turnH + j - 4);
+                        npcs.add(players.get(turnH + j - 4));
+                    } else {
+                        pos.add(turnH + j);
+                        npcs.add(players.get(turnH + j));
+                    }
+
                 }
             }
         }
-            
+
     }
 
     public void setListener(GameListener listener) {
@@ -254,17 +255,18 @@ public class Game {
 
     private void advanceTurn() {
         for (int i = 0; i < 3; i++) {
-            gui.colorLabel.setText(actualCard.actColor());
+            gui.colorLabel.setText(actualCard.actColorStr());
+            gui.colorLabel.setForeground(actualCard.actColor());
             iPlayer player = players.get(pos.get(i));
             switch (i) {
                 case 0:
-                    gui.deckLabel1.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel1.setText("Cartas: " + player.deck.size());
                     break;
                 case 1:
-                    gui.deckLabel2.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel2.setText("Cartas: " + player.deck.size());
                     break;
                 default:
-                    gui.deckLabel3.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel3.setText("Cartas: " + player.deck.size());
                     break;
             }
         }
@@ -272,22 +274,22 @@ public class Game {
         int j1 = pos.get(0);
         int j2 = pos.get(1);
         int j3 = pos.get(2);
-        if (turn == j1){
+        if (turn == j1) {
             gui.playerLabel1.setForeground(Color.green);
-                gui.playerLabel2.setForeground(Color.white);
-                gui.playerLabel3.setForeground(Color.white);
-        }else if (turn == j2){
+            gui.playerLabel2.setForeground(Color.white);
+            gui.playerLabel3.setForeground(Color.white);
+        } else if (turn == j2) {
             gui.playerLabel1.setForeground(Color.white);
-                gui.playerLabel2.setForeground(Color.green);
-                gui.playerLabel3.setForeground(Color.white);
-        }else if (turn == j3){
+            gui.playerLabel2.setForeground(Color.green);
+            gui.playerLabel3.setForeground(Color.white);
+        } else if (turn == j3) {
             gui.playerLabel1.setForeground(Color.white);
-                gui.playerLabel2.setForeground(Color.white);
-                gui.playerLabel3.setForeground(Color.green);
-        }else{
+            gui.playerLabel2.setForeground(Color.white);
+            gui.playerLabel3.setForeground(Color.green);
+        } else {
             gui.playerLabel1.setForeground(Color.white);
-                gui.playerLabel2.setForeground(Color.white);
-                gui.playerLabel3.setForeground(Color.white);
+            gui.playerLabel2.setForeground(Color.white);
+            gui.playerLabel3.setForeground(Color.white);
         }
         nextTurn();
     }
