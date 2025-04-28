@@ -1,11 +1,20 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RadialGradientPaint;
+import java.awt.geom.Point2D;
+import javax.swing.JPanel;
+
 public class EndGUI extends javax.swing.JFrame {
+
     private MainGUI mainGui;
 
     public EndGUI(String ganador, MainGUI mainGui) {
+        crearFondo();
         initComponents();
-        winLabel.setText("Ha ganado: " + ganador);
+        winLabel.setText("¡Ganador: " + ganador + "!");
         this.mainGui = mainGui;
     }
 
@@ -23,6 +32,7 @@ public class EndGUI extends javax.swing.JFrame {
         winLabel.setText("jLabel1");
 
         reiniciarBtton.setBackground(new java.awt.Color(0, 0, 0));
+        reiniciarBtton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         reiniciarBtton.setForeground(new java.awt.Color(255, 102, 102));
         reiniciarBtton.setText("Jugar de nuevo");
         reiniciarBtton.addActionListener(new java.awt.event.ActionListener() {
@@ -36,11 +46,13 @@ public class EndGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(143, 143, 143)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(reiniciarBtton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(winLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(143, 143, 143))
+                .addContainerGap(143, Short.MAX_VALUE)
+                .addComponent(reiniciarBtton)
+                .addContainerGap(143, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(winLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -59,6 +71,34 @@ public class EndGUI extends javax.swing.JFrame {
         mainGui.resetGame();
         this.dispose();
     }//GEN-LAST:event_reiniciarBttonActionPerformed
+
+    // Función para el fondo del juego
+    private void crearFondo() {
+        setContentPane(new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                // Se crea un objeto Graphics2D para usar gradientes
+                Graphics2D g2d = (Graphics2D) g;
+
+                // Se define el degradado: rojo oscuro (en las esquinas) a rojo claro (en el centro)
+                Color rojoOscuro = new Color(139, 0, 0); // Rojo oscuro
+                Color rojoClaro = new Color(255, 102, 102); // Rojo claro
+
+                // Degradado radiactivo: centro a los bordes
+                RadialGradientPaint gradiente = new RadialGradientPaint(
+                        new Point2D.Float(getWidth() / 2, getHeight() / 2), // Centro del gradiente
+                        getWidth() / 2, // Radio del gradiente
+                        new float[]{0f, 1f}, // Distribución del color (más claro en el centro)
+                        new Color[]{rojoClaro, rojoOscuro} // Colores del gradiente
+                );
+
+                g2d.setPaint(gradiente);
+                g2d.fillRect(0, 0, getWidth(), getHeight()); // Rellenar con el gradiente
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton reiniciarBtton;
