@@ -3,6 +3,7 @@ package models;
 import java.awt.Color;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import models.enums.Colors;
@@ -26,6 +27,8 @@ public class Game {
     private Image img;
     private int direction;
     private GameListener listener;
+    private ArrayList<Integer> pos = new ArrayList<>();
+    private ArrayList<iPlayer> npcs = new ArrayList<>();
 
     public Game(MainGUI gui) {
         this.gui = gui;
@@ -46,6 +49,28 @@ public class Game {
         startCard();
     }
 
+    private void showOrder() {
+        int turnH;
+        for (int i = 0; i < 4; i++){
+            if (players.get(i).getName().equals("Human")){
+                turnH = i;
+                for (int j = 1; j<4;j++){
+                    if (turnH + 1 > 3)
+                        turnH = 0;
+                    if (turnH + j >= 4){
+                        pos.add(turnH+j -4);
+                        npcs.add(players.get(turnH+j -4));
+                    }else{
+                        pos.add(turnH+j);
+                        npcs.add(players.get(turnH+j));
+                    }
+                
+                }
+            }
+        }
+            
+    }
+
     public void setListener(GameListener listener) {
         this.listener = listener;
     }
@@ -56,10 +81,12 @@ public class Game {
             Logger.error("Ya hay una partida empezada");
             return;
         }
+        Collections.shuffle(players);
+        showOrder();
 
-        gui.playerLabel1.setText(players.get(0).getName());
-        gui.playerLabel2.setText(players.get(1).getName());
-        gui.playerLabel3.setText(players.get(2).getName());
+        gui.playerLabel1.setText(npcs.get(0).getName());
+        gui.playerLabel2.setText(npcs.get(1).getName());
+        gui.playerLabel3.setText(npcs.get(2).getName());
 
         gameStarted = true;
         Logger.gameStart(this);
@@ -78,29 +105,29 @@ public class Game {
                 if (i != 0) {
                     Card card = new Card(i, Colors.values()[j], Types.NUM);
                     Card card2 = new Card(i, Colors.values()[j], Types.NUM);
-                    if(actualCard != null) {
-                        if(card.toString().equals(actualCard.toString())) {
+                    if (actualCard != null) {
+                        if (card.toString().equals(actualCard.toString())) {
                             enUso = true;
                         }
                     }
                     for (iPlayer player : players) {
                         enUso = player.deck.stream().anyMatch(o -> card.toString().equals(o.toString()));
                     }
-                    if(!enUso) {
+                    if (!enUso) {
                         drawDeck.add(card);
                         drawDeck.add(card2);
                     }
                 } else {
                     Card card = new Card(i, Colors.values()[j], Types.NUM);
-                    if(actualCard != null) {
-                        if(card.toString().equals(actualCard.toString())) {
+                    if (actualCard != null) {
+                        if (card.toString().equals(actualCard.toString())) {
                             enUso = true;
                         }
                     }
                     for (iPlayer player : players) {
                         enUso = player.deck.stream().anyMatch(o -> card.toString().equals(o.toString()));
                     }
-                    if(!enUso) {
+                    if (!enUso) {
                         drawDeck.add(card);
                     }
                 }
@@ -132,7 +159,7 @@ public class Game {
         Card drawed = drawDeck.get(random.nextInt(drawDeck.size()));
         gui.drawDeckLabel.setText("Mazo: " + drawDeck.size());
         drawDeck.remove(drawed);
-        if(drawDeck.isEmpty()) {
+        if (drawDeck.isEmpty()) {
             fillDeck();
         }
         return drawed;
@@ -142,7 +169,7 @@ public class Game {
         for (int i = 0; i < qty; i++) {
             player.getDeck().add(draw());
         }
-        if(player instanceof Human) {
+        if (player instanceof Human) {
             gui.displayHumanDeck();
         }
     }
@@ -180,6 +207,7 @@ public class Game {
         // cartas que van tirando
         new javax.swing.SwingWorker<Void, Void>() {
             Card card = null;
+
             @Override
             protected Void doInBackground() throws Exception {
                 card = current.playCard(actualCard);
@@ -225,9 +253,9 @@ public class Game {
     }
 
     private void advanceTurn() {
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             gui.colorLabel.setText(actualCard.actColor());
-            iPlayer player = players.get(i);
+            iPlayer player = players.get(pos.get(i));
             switch (i) {
                 case 0:
                     gui.deckLabel1.setText("Cartas restantes: " + player.deck.size());
@@ -241,28 +269,26 @@ public class Game {
             }
         }
         turn = (turn + direction + players.size()) % players.size();
-        switch (turn) {
-                case 0:
-                    gui.playerLabel1.setForeground(Color.green);
-                    gui.playerLabel2.setForeground(Color.white);
-                    gui.playerLabel3.setForeground(Color.white);
-                    break;
-                case 1:
-                    gui.playerLabel1.setForeground(Color.white);
-                    gui.playerLabel2.setForeground(Color.green);
-                    gui.playerLabel3.setForeground(Color.white);
-                    break;
-                case 2:
-                    gui.playerLabel1.setForeground(Color.white);
-                    gui.playerLabel2.setForeground(Color.white);
-                    gui.playerLabel3.setForeground(Color.green);
-                    break;
-                default:
-                    gui.playerLabel1.setForeground(Color.white);
-                    gui.playerLabel2.setForeground(Color.white);
-                    gui.playerLabel3.setForeground(Color.white);
-                    break;
-            }
+        int j1 = pos.get(0);
+        int j2 = pos.get(1);
+        int j3 = pos.get(2);
+        if (turn == j1){
+            gui.playerLabel1.setForeground(Color.green);
+                gui.playerLabel2.setForeground(Color.white);
+                gui.playerLabel3.setForeground(Color.white);
+        }else if (turn == j2){
+            gui.playerLabel1.setForeground(Color.white);
+                gui.playerLabel2.setForeground(Color.green);
+                gui.playerLabel3.setForeground(Color.white);
+        }else if (turn == j3){
+            gui.playerLabel1.setForeground(Color.white);
+                gui.playerLabel2.setForeground(Color.white);
+                gui.playerLabel3.setForeground(Color.green);
+        }else{
+            gui.playerLabel1.setForeground(Color.white);
+                gui.playerLabel2.setForeground(Color.white);
+                gui.playerLabel3.setForeground(Color.white);
+        }
         nextTurn();
     }
 
