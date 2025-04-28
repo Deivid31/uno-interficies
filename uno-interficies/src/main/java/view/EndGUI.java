@@ -18,8 +18,12 @@ public class EndGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        winLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        winLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         winLabel.setText("jLabel1");
 
+        reiniciarBtton.setBackground(new java.awt.Color(0, 0, 0));
+        reiniciarBtton.setForeground(new java.awt.Color(255, 102, 102));
         reiniciarBtton.setText("Jugar de nuevo");
         reiniciarBtton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -32,14 +36,11 @@ public class EndGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(reiniciarBtton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(winLabel)))
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addGap(143, 143, 143)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(reiniciarBtton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(winLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(143, 143, 143))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -48,7 +49,7 @@ public class EndGUI extends javax.swing.JFrame {
                 .addComponent(winLabel)
                 .addGap(40, 40, 40)
                 .addComponent(reiniciarBtton)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         pack();
