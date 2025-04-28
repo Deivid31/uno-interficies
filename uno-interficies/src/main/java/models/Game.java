@@ -46,7 +46,7 @@ public class Game {
         players.add(new Npc(this));
         players.add(new Human(this));
 
-        startCard();
+        firstCard();
     }
 
     private void showOrder() {
@@ -175,9 +175,16 @@ public class Game {
         }
     }
 
-    public void startCard() {
+    public void firstCard() {
         Card card = draw();
         actualCard = card;
+
+        turn = (turn - direction + players.size()) % players.size();
+
+        if (card != null) {
+            handleSpecialCard(actualCard);
+        }
+
         if (listener != null) {
             listener.onCardPlayed();
         }
