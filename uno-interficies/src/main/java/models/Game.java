@@ -46,7 +46,6 @@ public class Game {
         players.add(new Npc(this));
         players.add(new Human(this));
 
-        firstCard();
     }
 
     private void showOrder() {
@@ -91,7 +90,7 @@ public class Game {
 
         gameStarted = true;
         Logger.gameStart(this);
-        nextTurn();
+        firstCard();
     }
 
     public void fillDeck() {
@@ -188,6 +187,7 @@ public class Game {
         if (listener != null) {
             listener.onCardPlayed();
         }
+        advanceTurn();
     }
 
     public List<Card> startingCards() {
