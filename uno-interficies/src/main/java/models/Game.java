@@ -103,33 +103,23 @@ public class Game {
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 4; j++) {
-                Boolean enUso = false;
+                int enUso = 0;
+                Card card = new Card(i, Colors.values()[j], Types.NUM);
+                if (actualCard != null) {
+                    if (card.toString().equals(actualCard.toString())) {
+                        enUso++;
+                    }
+                }
+                for (iPlayer player : players) {
+                    enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
+                }
                 if (i != 0) {
-                    Card card = new Card(i, Colors.values()[j], Types.NUM);
-                    Card card2 = new Card(i, Colors.values()[j], Types.NUM);
-                    if (actualCard != null) {
-                        if (card.toString().equals(actualCard.toString())) {
-                            enUso = true;
-                        }
-                    }
-                    for (iPlayer player : players) {
-                        enUso = player.deck.stream().anyMatch(o -> card.toString().equals(o.toString()));
-                    }
-                    if (!enUso) {
-                        drawDeck.add(card);
-                        drawDeck.add(card2);
+                    int copias = 2 - enUso;
+                    for (int k = 0; k < copias; k++) {
+                        drawDeck.add(new Card(i, Colors.values()[j], Types.NUM));
                     }
                 } else {
-                    Card card = new Card(i, Colors.values()[j], Types.NUM);
-                    if (actualCard != null) {
-                        if (card.toString().equals(actualCard.toString())) {
-                            enUso = true;
-                        }
-                    }
-                    for (iPlayer player : players) {
-                        enUso = player.deck.stream().anyMatch(o -> card.toString().equals(o.toString()));
-                    }
-                    if (!enUso) {
+                    if (enUso == 0) {
                         drawDeck.add(card);
                     }
                 }
@@ -139,16 +129,37 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             if (!Colors.values()[i].equals(Colors.BLACK)) {
                 for (int j = 0; j < 3; j++) {
+                    int enUso = 0;
                     Card card = new Card(-j - 1, Colors.values()[i], Types.values()[j]);
-                    Card card2 = new Card(-j - 1, Colors.values()[i], Types.values()[j]);
-                    drawDeck.add(card);
-                    drawDeck.add(card2);
+                    if (actualCard != null) {
+                        if (card.toString().equals(actualCard.toString())) {
+                            enUso++;
+                        }
+                    }
+                    for (iPlayer player : players) {
+                        enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
+                    }
+                    int copias = 2 - enUso;
+                    for (int k = 0; k < copias; k++) {
+                        drawDeck.add(new Card(i, Colors.values()[j], Types.NUM));
+                    }
                 }
             } else {
                 for (int j = 0; j < 2; j++) {
                     for (int k = 0; k < 4; k++) {
+                        int enUso = 0;
                         Card card = new Card(-j - 4, Colors.values()[i], Types.values()[j + 3]);
-                        drawDeck.add(card);
+                        if (actualCard != null) {
+                        if (card.toString().equals(actualCard.toString())) {
+                                enUso++;
+                            }
+                        }
+                        for (iPlayer player : players) {
+                            enUso += player.deck.stream().filter(o -> card.toString().equals(o.toString())).count();
+                        }
+                        if (enUso == 0) {
+                            drawDeck.add(card);
+                        }
                     }
                 }
             }
