@@ -49,26 +49,28 @@ public class Game {
     }
 
     private void showOrder() {
-        int turnH;
-        for (int i = 0; i < 4; i++) {
-            if (players.get(i).getName().equals("Human")) {
-                turnH = i;
-                for (int j = 1; j < 4; j++) {
-                    if (turnH + 1 > 3) {
-                        turnH = 0;
-                    }
-                    if (turnH + j >= 4) {
-                        pos.add(turnH + j - 4);
-                        npcs.add(players.get(turnH + j - 4));
-                    } else {
-                        pos.add(turnH + j);
-                        npcs.add(players.get(turnH + j));
-                    }
+        int humanIndex = -1;
 
-                }
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals("Human")) {
+                humanIndex = i;
+                break;
             }
         }
 
+        if (humanIndex == -1) {
+            Logger.error("No se encontró al jugador humano.");
+            return;
+        }
+
+        pos.clear();
+        npcs.clear();
+
+        for (int j = 1; j <= 3; j++) {
+            int npcIndex = (humanIndex + j) % players.size();
+            pos.add(npcIndex);
+            npcs.add(players.get(npcIndex));
+        }
     }
 
     public void setListener(GameListener listener) {
