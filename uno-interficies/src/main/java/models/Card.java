@@ -166,7 +166,7 @@ public class Card extends JPanel implements Serializable {
             case RED:
                 return new Color(139, 0, 0);
             case GREEN:
-                return Color.GREEN;
+                return new Color(50, 175, 50);
             default:
                 return Color.YELLOW;
         }
