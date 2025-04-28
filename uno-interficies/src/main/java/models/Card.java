@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.Serializable;
 import javax.swing.*;
 import models.enums.Colors;
+import static models.enums.Colors.BLUE;
+import static models.enums.Colors.GREEN;
+import static models.enums.Colors.RED;
 import models.enums.Types;
 
 public class Card extends JPanel implements Serializable {
@@ -101,7 +104,7 @@ public class Card extends JPanel implements Serializable {
     public void setColor(Colors color) {
         this.color = color;
     }
-    
+
     public Types getType() {
         return type;
     }
@@ -142,17 +145,30 @@ public class Card extends JPanel implements Serializable {
     public String toString() {
         return this.getColor().toString() + " " + this.getNum() + " (" + this.getType().toString() + ")";
     }
-    
-    public String actColor() {
+
+    public String actColorStr() {
         switch (color) {
             case BLUE:
-                return "Color actual: Azul";
+                return "Azul";
             case RED:
-                return "Color actual: Rojo";
+                return "Rojo";
             case GREEN:
-                return "Color actual: Verde";
+                return "Verde";
             default:
-                return "Color actual: Amarillo";
+                return "Amarillo";
+        }
+    }
+
+    public Color actColor() {
+        switch (color) {
+            case BLUE:
+                return Color.BLUE;
+            case RED:
+                return new Color(139, 0, 0);
+            case GREEN:
+                return Color.GREEN;
+            default:
+                return Color.YELLOW;
         }
     }
 }

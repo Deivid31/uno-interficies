@@ -46,7 +46,6 @@ public class Game {
         players.add(new Npc(this));
         players.add(new Human(this));
 
-        startCard();
     }
 
     private void showOrder() {
@@ -93,7 +92,7 @@ public class Game {
 
         gameStarted = true;
         Logger.gameStart(this);
-        nextTurn();
+        firstCard();
     }
 
     public void fillDeck() {
@@ -177,12 +176,20 @@ public class Game {
         }
     }
 
-    public void startCard() {
+    public void firstCard() {
         Card card = draw();
         actualCard = card;
+
+        turn = (turn - direction + players.size()) % players.size();
+
+        if (card != null) {
+            handleSpecialCard(actualCard);
+        }
+
         if (listener != null) {
             listener.onCardPlayed();
         }
+        advanceTurn();
     }
 
     public List<Card> startingCards() {
@@ -257,17 +264,18 @@ public class Game {
 
     private void advanceTurn() {
         for (int i = 0; i < 3; i++) {
-            gui.colorLabel.setText(actualCard.actColor());
+            gui.colorLabel.setText(actualCard.actColorStr());
+            gui.colorLabel.setForeground(actualCard.actColor());
             iPlayer player = players.get(pos.get(i));
             switch (i) {
                 case 0:
-                    gui.deckLabel1.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel1.setText("Cartas: " + player.deck.size());
                     break;
                 case 1:
-                    gui.deckLabel2.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel2.setText("Cartas: " + player.deck.size());
                     break;
                 default:
-                    gui.deckLabel3.setText("Cartas restantes: " + player.deck.size());
+                    gui.deckLabel3.setText("Cartas: " + player.deck.size());
                     break;
             }
         }
